@@ -176,10 +176,10 @@ class Bix_datagateway_controller extends CI_Controller {
         
     }
     
-    function sync_record($tableid,$fields,$sync_key_fieldid)
+    function sync_record($tableid,$fields,$sync_field,$sync_field_bixdata)
     {
-        $origin_key_value=$fields[$sync_key_fieldid];
-        $bixdata_row= $this->db_get_row('user_'.$tableid,'recordid_',"$sync_key_fieldid='$origin_key_value'");
+        $origin_key_value=$fields[$sync_field_bixdata];
+        $bixdata_row= $this->db_get_row('user_'.$tableid,'recordid_',"$sync_field_bixdata='$origin_key_value'");
         if($bixdata_row!=null)
         {
             echo "UPDATE RECORD <br/>";
@@ -455,14 +455,25 @@ class Bix_datagateway_controller extends CI_Controller {
     
     public function syncdata($bixdata_table='')
     {
+        $sync_service= $this->db_get_value('sys_table', 'sync_service', "id='$bixdata_table'");
         $sync_table= $this->db_get_value('sys_table', 'sync_table', "id='$bixdata_table'");
         $sync_field= $this->db_get_value('sys_table', 'sync_field', "id='$bixdata_table'");
         $sync_condition= $this->db_get_value('sys_table', 'sync_condition', "id='$bixdata_table'");
         $sync_order= $this->db_get_value('sys_table', 'sync_order', "id='$bixdata_table'");
-        $servername = "10.0.0.23";
-        $username = "vtenext";
-        $password = "Jbt$5qNbJXg";
-        $database= "jdoc";
+        if($sync_service=='JDoc')
+        {
+            $servername = "10.0.0.23";
+            $username = "vtenext";
+            $password = "Jbt$5qNbJXg";
+            $database= "jdoc";
+        }
+        if($sync_service=='Vte')
+        {
+            $servername = "10.0.0.25";
+            $username = "vtenextremote";
+            $password = "DfCEVixXETLf$";
+            $database= "vte_swissbix";
+        }
         $conn = new mysqli($servername, $username, $password, $database);
         $bixdata_fields=array();
         $rows=$this->db_get('sys_field','*',"tableid='$bixdata_table'");
@@ -496,9 +507,10 @@ class Bix_datagateway_controller extends CI_Controller {
                 {
                     $sync_fields[$bixdata_fields[$key]]=$field;
                 }
-            }
+            }   
             var_dump($sync_fields);
-            $this->sync_record($bixdata_table, $sync_fields,$sync_field);
+            $sync_field_bixdata=$bixdata_fields[$sync_field];
+            $this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
             
             
         }
@@ -508,6 +520,19 @@ class Bix_datagateway_controller extends CI_Controller {
             $linked_tableid=$sys_table_link_row['tablelinkid'];
             $this->link_records($bixdata_table,$linked_tableid);
         }
+    }
+    
+    public function apidata($bixdata_table='')
+    {
+        if($bixdata_table=='feedback')
+        {
+            $this->apidata_feedback();
+        }
+    }
+    
+    public function apidata_feedback()
+    {
+        
     }
     
     public function link_records($master_tableid='',$link_tableid='')

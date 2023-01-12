@@ -66,13 +66,29 @@ class Rest_controller extends CI_Controller {
         }
         $where=$where.")";
         $sql=$sql." FROM user_$table WHERE $where AND (recordstatus_ is null OR recordstatus_!='temp') ) AS risultati LEFT JOIN user_".$table."_owner ON risultati.recordid_=user_".$table."_owner.recordid_ where ownerid_ is null OR ownerid_=1 ";
-        $return['records']=$this->Sys_model->get_records($table,$sql,'recordid_','desc',0,1);
+        $return['records']=$this->Sys_model->get_records($table,$sql,'recordid_','desc');
+        echo json_encode($return);
+    }
+    
+    public function get_records_kanban()
+    {
+        $post=$_POST;
+        $table=$post['table'];
+        $searchTerm=$post['searchTerm'];
+        $where='TRUE';
+        $sql="";
+        $sql="select risultati.recordid_,risultati.recordid_ as id, risultati.description as name, risultati.startdate as start, risultati.duedate as end FROM (SELECT *";
+        $sql=$sql." FROM user_$table WHERE $where AND (recordstatus_ is null OR recordstatus_!='temp') ) AS risultati LEFT JOIN user_".$table."_owner ON risultati.recordid_=user_".$table."_owner.recordid_ where ownerid_ is null OR ownerid_=1 ";
+        $return['records']=$this->Sys_model->get_records($table,$sql,'start','asc');
         echo json_encode($return);
     }
     
     public function get_fissi()
     {
-        $fissi=$this->Sys_model->get_fissi('company', '00000000000000000000000000000500');
+        $post=$_POST;
+        $tableid=$post['tableid'];
+        $recordid=$post['recordid'];
+        $fissi=$this->Sys_model->get_fissi($tableid, $recordid);
         echo json_encode($fissi);
     }
     
