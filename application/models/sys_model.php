@@ -13290,9 +13290,12 @@ class Sys_model extends CI_Model {
         $this->execute_query($sql);
     }
     
-    public function get_saved_views($tableid)
+    public function get_saved_views($tableid,$userid=null)
     {
-        $userid=  $this->get_userid();
+        if($userid==null)
+        {
+            $userid=  $this->get_userid();
+        }
         $superuser_view=array();
         $user_view=array();
         $sql="SELECT id,name from sys_view WHERE sys_view.tableid='$tableid' AND sys_view.userid='$userid' ORDER BY name";

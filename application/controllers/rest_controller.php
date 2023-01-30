@@ -16,8 +16,8 @@ class Rest_controller extends CI_Controller {
     public function get_records()
     {
         $post=$_POST;
-        $table=$post['table'];
-        $searchTerm=$post['searchTerm'];
+        $table=$post['tableid'];
+        $searchTerm='';
         $where='TRUE';
         
         $columns=  $this->Sys_model->get_results_columns($table, 1);
@@ -94,8 +94,11 @@ class Rest_controller extends CI_Controller {
     
     public function get_record_labels()
     {
-        $fissi=$this->Sys_model->get_labels_table('company', 'scheda', '00000000000000000000000000000500', 1);
-        echo json_encode($fissi);
+        $post=$_POST;
+        $tableid=$post['tableid'];
+        $recordid=$post['recordid'];
+        $labels=$this->Sys_model->get_labels_table($tableid, 'scheda', $recordid, 1);
+        echo json_encode($labels);
     }
     
     public function get_record_fields()
@@ -104,6 +107,15 @@ class Rest_controller extends CI_Controller {
         $recordid=$post['recordid'];
         $fissi=$this->Sys_model->get_fields_table('deal','Dati', $recordid);
         echo json_encode($fissi);
+    }
+    
+    public function get_views()
+    {
+        $post=$_POST;
+        $tableid=$post['tableid'];
+        $userid=$post['userid'];
+        $views=$this->Sys_model->get_saved_views($tableid,$userid);
+        echo json_encode($views);
     }
 }
 ?>
