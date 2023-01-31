@@ -16006,6 +16006,21 @@ GROUP BY user_contratti.recordid_
          $this->load->view('test_pagina2');
     }
     
+    public function scarica_stampa_test()
+    {
+        $data=array();
+        $content=$this->load->view('sys/desktop/stampe/test_stampa',$data, TRUE);
+        $path_stampa=$this->genera_stampa($content,'ElencoTelefonico','portrait');
+        $url_stampa=  str_replace("../", domain_url(), $path_stampa);
+        
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="test.pdf"');
+        header("Content-Description: Download PHP"); 
+        header("Content-Length: ".filesize($path_stampa)); 
+        //readfile("..\JDocServer\generati\\$userid\\$nomefile"); 
+        readfile($path_stampa); 
+    
+    }
     
     
     
