@@ -506,7 +506,7 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             $servername = "SRVJDOC01";
             $connectionInfo = array( "Database"=>"3pclc_data", "UID"=>"sa", "PWD"=>"3pclc,.-22");
-            $conn = sqlsrv_connect( $serverName, $connectionInfo);
+            $conn = sqlsrv_connect( $servername, $connectionInfo);
         }
         $bixdata_fields=array();
         $rows=$this->db_get('sys_field','*',"tableid='$bixdata_table'");
