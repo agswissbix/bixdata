@@ -182,7 +182,7 @@ class Bix_datagateway_controller extends CI_Controller {
         $bixdata_row= $this->db_get_row('user_'.$tableid,'recordid_',"$sync_field_bixdata='$origin_key_value'");
         if($bixdata_row!=null)
         {
-            echo "UPDATE RECORD <br/>";
+            echo '<span style="color:green">UPDATE RECORD</span> <br/>';
             $recordid=$bixdata_row['recordid_'];
             //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
@@ -543,7 +543,7 @@ class Bix_datagateway_controller extends CI_Controller {
         if(($sync_service=='Progel'))
         {
             $rows=array();
-            $stmt = sqlsrv_query($conn, "SELECT TOP(100) * FROM $sync_table $condition $order");
+            $stmt = sqlsrv_query($conn, "SELECT * FROM $sync_table $condition $order");
             while($row = sqlsrv_fetch_array($stmt)) {
                 $rows[]=$row;
             }
