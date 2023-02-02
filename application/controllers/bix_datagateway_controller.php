@@ -534,7 +534,7 @@ class Bix_datagateway_controller extends CI_Controller {
         echo $sync_field."<br/>";
         echo $sync_condition."<br/>";
         echo $sync_order."<br/>";
-        echo "SELECT * FROM $sync_table $condition $order";
+        echo "SELECT * FROM $sync_table $condition $order"."<br/><br/>";
         
         if(($sync_service=='JDoc')||($sync_service=='Vte'))
         {
@@ -556,9 +556,12 @@ class Bix_datagateway_controller extends CI_Controller {
                     $sync_fields[$bixdata_fields[$key]]=$field;
                 }
             }   
+            echo "SYNC FIELDS <br/>";
             var_dump($sync_fields);
+             echo "SYNC FIELD <br/>";
             echo $sync_field."<br/>";
             $sync_field_bixdata=$bixdata_fields[$sync_field];
+             echo "SYNC FIELD BIXDATA <br/>";
             echo $sync_field_bixdata."<br/>";
             //$this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
             
