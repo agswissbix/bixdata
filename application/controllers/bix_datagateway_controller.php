@@ -543,7 +543,7 @@ class Bix_datagateway_controller extends CI_Controller {
         if(($sync_service=='Progel'))
         {
             $rows=array();
-            $stmt = sqlsrv_query($conn, "SELECT TOP(10) * FROM $sync_table $condition $order");
+            $stmt = sqlsrv_query($conn, "SELECT TOP(1) * FROM $sync_table $condition $order");
             while($row = sqlsrv_fetch_array($stmt)) {
                 $rows[]=$row;
             }
