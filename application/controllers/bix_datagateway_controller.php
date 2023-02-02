@@ -184,13 +184,13 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             echo "UPDATE RECORD <br/>";
             $recordid=$bixdata_row['recordid_'];
-            $this->update_record($tableid,1,$fields,"recordid_='$recordid'");
+            //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
         else
         {
             echo "INSERT RECORD <br/>";
             $fields['id']= $this->Sys_model->generate_id($tableid);
-            $recordid=$this->insert_record($tableid,1,$fields);
+            //$recordid=$this->insert_record($tableid,1,$fields);
         }
         
         if($tableid=='salesorderline')
@@ -558,12 +558,13 @@ class Bix_datagateway_controller extends CI_Controller {
             }   
             echo "SYNC FIELDS <br/>";
             var_dump($sync_fields);
-             echo "SYNC FIELD <br/>";
+            echo "<br/>";
+            echo "SYNC FIELD <br/>";
             echo $sync_field."<br/>";
             $sync_field_bixdata=$bixdata_fields[$sync_field];
-             echo "SYNC FIELD BIXDATA <br/>";
+            echo "SYNC FIELD BIXDATA <br/>";
             echo $sync_field_bixdata."<br/>";
-            //$this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
+            $this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
             
             
         }
