@@ -535,7 +535,7 @@ class Bix_datagateway_controller extends CI_Controller {
         echo $sync_condition."<br/>";
         echo $sync_order."<br/>";
         echo "SELECT * FROM $sync_table $condition $order";
-        /*
+        
         $rows=$this->conn_select($conn,"SELECT * FROM $sync_table $condition $order");
         foreach ($rows as $key => $row) {
             $sync_fields=array();
@@ -546,17 +546,21 @@ class Bix_datagateway_controller extends CI_Controller {
                 }
             }   
             var_dump($sync_fields);
+            echo $sync_field."<br/>";
             $sync_field_bixdata=$bixdata_fields[$sync_field];
-            $this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
+            echo $sync_field_bixdata."<br/>";
+            //$this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
             
             
         }
         
+        /*
         $sys_table_link_rows=$this->db_get('sys_table_link','*',"tableid='$bixdata_table'");
         foreach ($sys_table_link_rows as $key => $sys_table_link_row) {
             $linked_tableid=$sys_table_link_row['tablelinkid'];
             $this->link_records($bixdata_table,$linked_tableid);
-        }*/
+        }
+         * */
     }
     
     public function apidata($bixdata_table='')
