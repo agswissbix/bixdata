@@ -536,7 +536,18 @@ class Bix_datagateway_controller extends CI_Controller {
         echo $sync_order."<br/>";
         echo "SELECT * FROM $sync_table $condition $order";
         
-        $rows=$this->conn_select($conn,"SELECT * FROM $sync_table $condition $order");
+        if(($sync_service=='JDoc')||($sync_service=='Vte'))
+        {
+            $rows=$this->conn_select($conn,"SELECT * FROM $sync_table $condition $order");
+        }
+        if(($sync_service=='Progel'))
+        {
+            $rows=array();
+            $stmt = sqlsrv_query($conn, "SELECT * FROM $sync_table $condition $order LIMIT 10");
+            while($row = sqlsrv_fetch_array($stmt)) {
+                $rows[]=$row;
+            }
+        }
         foreach ($rows as $key => $row) {
             $sync_fields=array();
             foreach ($row as $key => $field) {
