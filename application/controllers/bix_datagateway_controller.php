@@ -462,12 +462,15 @@ class Bix_datagateway_controller extends CI_Controller {
         if( $conn ) 
         {
            echo "Connection ok.<br />";
-           $sql="
-                SELECT *
-                FROM PROGEL_Swissbix_Corrispondenti
-               ";
-           $rows=$this->conn_select($conn,$sql);
-           var_dump($sql);
+           $sql="SELECT * FROM A1001";
+           //$rows=$this->conn_select($conn,$sql);
+            $rows=array();
+            $sql="SELECT * FROM A1001";
+            $stmt = sqlsrv_query($conn, $sql);
+            while($row = sqlsrv_fetch_array($stmt)) {
+                $rows[]=$row;
+            }
+           var_dump($rows);
         }
         else
         {
