@@ -453,6 +453,23 @@ class Bix_datagateway_controller extends CI_Controller {
         $this->syncdata('user_hubspotlineitems','dealline','id_hubspot');
     }
     
+    public function testsqlserver()
+    {
+        $serverName = "SRVJDOC01";
+        $connectionInfo = array( "Database"=>"3pclc_data", "UID"=>"sa", "PWD"=>"3pclc,.-22");
+        $conn = sqlsrv_connect( $serverName, $connectionInfo);
+
+        if( $conn ) 
+        {
+           echo "Connection ok.<br />";
+        }
+        else
+        {
+             echo "Connection could not be established.<br />";
+             die( print_r( sqlsrv_errors(), true));
+        }
+    }
+    
     public function syncdata($bixdata_table='')
     {
         $sync_service= $this->db_get_value('sys_table', 'sync_service', "id='$bixdata_table'");
@@ -466,6 +483,7 @@ class Bix_datagateway_controller extends CI_Controller {
             $username = "vtenext";
             $password = "Jbt$5qNbJXg";
             $database= "jdoc";
+            $conn = new mysqli($servername, $username, $password, $database);
         }
         if($sync_service=='Vte')
         {
@@ -473,8 +491,14 @@ class Bix_datagateway_controller extends CI_Controller {
             $username = "vtenextremote";
             $password = "DfCEVixXETLf$";
             $database= "vte_swissbix";
+            $conn = new mysqli($servername, $username, $password, $database);
         }
-        $conn = new mysqli($servername, $username, $password, $database);
+        if($sync_service=='Progel')
+        {
+            $servername = "SRVJDOC01";
+            $connectionInfo = array( "Database"=>"3pclc_data", "UID"=>"sa", "PWD"=>"3pclc,.-22");
+            $conn = sqlsrv_connect( $serverName, $connectionInfo);
+        }
         $bixdata_fields=array();
         $rows=$this->db_get('sys_field','*',"tableid='$bixdata_table'");
         foreach ($rows as $key => $row) {
@@ -497,8 +521,12 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             $order="ORDER BY $sync_order";
         }
-        
-  
+        echo $sync_table."<br/>";
+        echo $sync_field."<br/>";
+        echo $sync_condition."<br/>";
+        echo $sync_order."<br/>";
+        echo "SELECT * FROM $sync_table $condition $order";
+        /*
         $rows=$this->conn_select($conn,"SELECT * FROM $sync_table $condition $order");
         foreach ($rows as $key => $row) {
             $sync_fields=array();
@@ -519,7 +547,7 @@ class Bix_datagateway_controller extends CI_Controller {
         foreach ($sys_table_link_rows as $key => $sys_table_link_row) {
             $linked_tableid=$sys_table_link_row['tablelinkid'];
             $this->link_records($bixdata_table,$linked_tableid);
-        }
+        }*/
     }
     
     public function apidata($bixdata_table='')
