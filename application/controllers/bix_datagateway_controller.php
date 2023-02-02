@@ -188,7 +188,7 @@ class Bix_datagateway_controller extends CI_Controller {
         }
         else
         {
-            echo "INSERT RECORD <br/>";
+            echo '<span style="color:red">INSERT RECORD</span> <br/>';
             $fields['id']= $this->Sys_model->generate_id($tableid);
             //$recordid=$this->insert_record($tableid,1,$fields);
         }
@@ -565,7 +565,7 @@ class Bix_datagateway_controller extends CI_Controller {
             echo "SYNC FIELD BIXDATA <br/>";
             echo $sync_field_bixdata."<br/>";
             $this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
-            
+            echo "<br/><br/><br/><br/>";
             
         }
         
