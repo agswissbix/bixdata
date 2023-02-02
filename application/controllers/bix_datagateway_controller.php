@@ -465,7 +465,7 @@ class Bix_datagateway_controller extends CI_Controller {
            $sql="SELECT * FROM A1001";
            //$rows=$this->conn_select($conn,$sql);
             $rows=array();
-            $sql="SELECT * FROM A1001";
+            $sql="SELECT * FROM PROGEL_Swissbix_Corrispondenti";
             $stmt = sqlsrv_query($conn, $sql);
             while($row = sqlsrv_fetch_array($stmt)) {
                 $rows[]=$row;
