@@ -184,13 +184,13 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             echo '<span style="color:green">UPDATE RECORD</span> <br/>';
             $recordid=$bixdata_row['recordid_'];
-            $this->update_record($tableid,1,$fields,"recordid_='$recordid'");
+            //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
         else
         {
             echo '<span style="color:red">INSERT RECORD</span> <br/>';
             $fields['id']= $this->Sys_model->generate_id($tableid);
-            $recordid=$this->insert_record($tableid,1,$fields);
+            //$recordid=$this->insert_record($tableid,1,$fields);
         }
         
         if($tableid=='salesorderline')
@@ -553,7 +553,7 @@ class Bix_datagateway_controller extends CI_Controller {
             foreach ($row as $key => $field) {
                 if(array_key_exists($key, $bixdata_fields))
                 {
-                    $sync_fields[$bixdata_fields[$key]]=$field;
+                    $sync_fields[$bixdata_fields[$key]]=conv_text_utf8($field); 
                 }
             }   
             echo "SYNC FIELDS <br/>";
