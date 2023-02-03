@@ -189,10 +189,11 @@ class Bix_datagateway_controller extends CI_Controller {
         else
         {
             echo '<span style="color:red">INSERT RECORD</span> <br/>';
-            if($tableid!='Dipendenti')
+            if($tableid!='dipendenti')
             {
                 $fields['id']= $this->Sys_model->generate_id($tableid);
             }
+                
             $recordid=$this->insert_record($tableid,1,$fields);
         }
         
