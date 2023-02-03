@@ -188,6 +188,10 @@ class Bix_datagateway_controller extends CI_Controller {
             {
                 echo $bixdata_row['cognome'].":".$fields['cognome']."<br/>";
                 echo $bixdata_row['nome'].":".$fields['nome']."<br/><br/>";
+                if((strtolower($bixdata_row['cognome'])!= strtolower($fields['cognome']))||(strtolower($bixdata_row['nom'])!= strtolower($fields['nom'])))
+                {
+                    echo '<span style="color:RED">ALERT</span> <br/>';
+                }
             }
             //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
