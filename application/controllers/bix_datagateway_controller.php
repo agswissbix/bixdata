@@ -179,7 +179,7 @@ class Bix_datagateway_controller extends CI_Controller {
     function sync_record($tableid,$fields,$sync_field,$sync_field_bixdata)
     {
         $origin_key_value=$fields[$sync_field_bixdata];
-        $bixdata_row= $this->db_get_row('user_'.$tableid,'recordid_',"$sync_field_bixdata='$origin_key_value'");
+        $bixdata_row= $this->db_get_row('user_'.$tableid,'*',"$sync_field_bixdata='$origin_key_value'");
         if($bixdata_row!=null)
         {
             echo '<span style="color:green">UPDATE RECORD</span> <br/>';
