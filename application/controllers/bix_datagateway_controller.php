@@ -186,8 +186,8 @@ class Bix_datagateway_controller extends CI_Controller {
             $recordid=$bixdata_row['recordid_'];
             if($tableid=='dipendenti')
             {
-                $bixdata_row['cognome'].":".$fields['cognome']."<br/>";
-                $bixdata_row['nome'].":".$fields['nome']."<br/><br/>";
+                echo $bixdata_row['cognome'].":".$fields['cognome']."<br/>";
+                echo $bixdata_row['nome'].":".$fields['nome']."<br/><br/>";
             }
             //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
