@@ -184,26 +184,13 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             echo '<span style="color:green">UPDATE RECORD</span> <br/>';
             $recordid=$bixdata_row['recordid_'];
-            if($tableid=='dipendenti')
-            {
-                $cognome_jdoc=strtolower($bixdata_row['cognome']);
-                $nome_jdoc=strtolower($bixdata_row['nome']);
-                $cognome_progel=strtolower($fields['cognome']);
-                $nome_progel=strtolower($fields['nome']);
-                echo $cognome_jdoc.":".$cognome_progel."<br/>";
-                echo $nome_jdoc.":".$nome_progel."<br/><br/>";
-                if(($cognome_jdoc!=$cognome_progel)||($nome_jdoc!= $nome_progel))
-                {
-                    echo '<span style="color:RED">ALERT</span> <br/>';
-                }
-            }
-            //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
+            $this->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
         else
         {
             echo '<span style="color:red">INSERT RECORD</span> <br/>';
             $fields['id']= $this->Sys_model->generate_id($tableid);
-            //$recordid=$this->insert_record($tableid,1,$fields);
+            $recordid=$this->insert_record($tableid,1,$fields);
         }
         
         if($tableid=='salesorderline')
