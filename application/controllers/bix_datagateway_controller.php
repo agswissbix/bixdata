@@ -186,9 +186,13 @@ class Bix_datagateway_controller extends CI_Controller {
             $recordid=$bixdata_row['recordid_'];
             if($tableid=='dipendenti')
             {
-                echo $bixdata_row['cognome'].":".$fields['cognome']."<br/>";
-                echo $bixdata_row['nome'].":".$fields['nome']."<br/><br/>";
-                if((strtolower($bixdata_row['cognome'])!= strtolower($fields['cognome']))||(strtolower($bixdata_row['nome'])!= strtolower($fields['nome'])))
+                $cognome_jdoc=strtolower($bixdata_row['cognome']);
+                $nome_jdoc=strtolower($bixdata_row['nome']);
+                $cognome_progel=strtolower($fields['cognome']);
+                $nome_progel=strtolower($fields['nome']);
+                echo $cognome_jdoc.":".$cognome_progel."<br/>";
+                echo $nome_jdoc.":".$nome_progel."<br/><br/>";
+                if(($cognome_jdoc!=$cognome_progel)||($nome_jdoc!= $nome_progel))
                 {
                     echo '<span style="color:RED">ALERT</span> <br/>';
                 }
