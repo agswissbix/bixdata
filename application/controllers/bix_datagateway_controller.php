@@ -485,6 +485,8 @@ class Bix_datagateway_controller extends CI_Controller {
     
     public function syncdata($bixdata_table='')
     {
+        header("Access-Control-Allow-Methods: POST, GET");
+        header("Access-Control-Allow-Origin: *");
         $sync_service= $this->db_get_value('sys_table', 'sync_service', "id='$bixdata_table'");
         $sync_table= $this->db_get_value('sys_table', 'sync_table', "id='$bixdata_table'");
         $sync_field= $this->db_get_value('sys_table', 'sync_field', "id='$bixdata_table'");
