@@ -70,6 +70,19 @@ class Rest_controller extends CI_Controller {
         echo json_encode($return);
     }
     
+    public function get_records_chart()
+    {
+        $post=$_POST;
+        $table=$post['table'];
+        $searchTerm=$post['searchTerm'];
+        $where='TRUE';
+        $sql="";
+        $sql="select risultati.recordid_,risultati.recordid_ as id, risultati.description as name, risultati.startdate as start, risultati.duedate as end FROM (SELECT *";
+        $sql=$sql." FROM user_$table WHERE $where AND (recordstatus_ is null OR recordstatus_!='temp') ) AS risultati LEFT JOIN user_".$table."_owner ON risultati.recordid_=user_".$table."_owner.recordid_ where ownerid_ is null OR ownerid_=1 ";
+        $return['records']=$this->Sys_model->get_records($table,$sql,'start','asc');
+        echo json_encode($return);
+    }
+    
     public function get_records_gantt()
     {
         $post=$_POST;
@@ -121,8 +134,9 @@ class Rest_controller extends CI_Controller {
     {
         $post=$_POST;
         $recordid=$post['recordid'];
-        $fissi=$this->Sys_model->get_fields_table('deal','Dati', $recordid);
-        echo json_encode($fissi);
+        $tableid=$post['tableid'];
+        $fields=$this->Sys_model->get_fields_table($tableid,'null',$recordid,'visualizzazione');
+        echo json_encode($fields);
     }
     
     public function get_views()

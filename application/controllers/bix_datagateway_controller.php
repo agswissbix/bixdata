@@ -27,7 +27,7 @@ class Bix_datagateway_controller extends CI_Controller {
         return $rows;
     }
     
-     function execute_query($sql)
+    function execute_query($sql)
     {
         $query = $this->db->query($sql);
         return $query;
