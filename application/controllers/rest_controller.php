@@ -133,7 +133,15 @@ class Rest_controller extends CI_Controller {
     public function get_record_fields()
     {
         $post=$_POST;
-        $recordid=$post['recordid'];
+        if(array_key_exists('recordid', $post))
+        {
+            $recordid=$post['recordid'];
+        }
+        else
+        {
+            $recordid='null';
+        }
+        
         $tableid=$post['tableid'];
         $fields=$this->Sys_model->get_fields_table($tableid,'null',$recordid,'visualizzazione');
         echo json_encode($fields);
@@ -146,6 +154,25 @@ class Rest_controller extends CI_Controller {
         $userid=$post['userid'];
         $views=$this->Sys_model->get_saved_views($tableid,$userid);
         echo json_encode($views);
+    }
+    
+    public function set_record()
+    {
+        $post=$_POST;
+        $tableid=$post['tableid'];
+        $recordid=$post['recordid'];
+        $fields_jsonstring=$post['fields'];
+        $fields=json_decode($fields_jsonstring, true);
+        if($recordid=='None')
+        {
+            $fields['id']=$this->Sys_model->generate_seriale($tableid, 'id');
+            $this->Sys_model->insert_record($tableid,1,$fields);
+        }
+        else
+        {
+            $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
+        }
+        
     }
 }
 ?>

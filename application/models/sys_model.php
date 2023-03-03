@@ -3061,7 +3061,7 @@ class Sys_model extends CI_Model {
         $filledfields=$emptyfields;
         $values_fields_table=array();
         //$prefilledfields=array();
-        if($recordid!='null')
+        if(($recordid!='null')||($recordid!=''))
         {
             $values_fields_table=  $this->get_values_fields_table($tableid, $recordid);
         }
