@@ -401,7 +401,7 @@ class Sys_viewcontroller extends CI_Controller {
             $dashboard_block='';
             if($dashboard_type=='report')
             {
-                $dashboard_block=  $this->load_block_dash_report($dashboard['viewid'],$dashboard['reportid']);
+                $dashboard_block=  array();//$this->load_block_dash_report($dashboard['viewid'],$dashboard['reportid']);
                 $dashboard_name='';
             }
             

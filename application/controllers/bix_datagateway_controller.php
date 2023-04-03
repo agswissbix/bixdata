@@ -575,13 +575,13 @@ class Bix_datagateway_controller extends CI_Controller {
             
         }
         
-        /*
+        
         $sys_table_link_rows=$this->db_get('sys_table_link','*',"tableid='$bixdata_table'");
         foreach ($sys_table_link_rows as $key => $sys_table_link_row) {
             $linked_tableid=$sys_table_link_row['tablelinkid'];
             $this->link_records($bixdata_table,$linked_tableid);
         }
-         * */
+         
     }
     
     public function apidata($bixdata_table='')

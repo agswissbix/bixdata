@@ -10386,6 +10386,44 @@ class Sys_model extends CI_Model {
       return $result;
     }
     
+    function get_records_linkedmaster2($tableid,$mastertableid,$term='')
+    {
+       $cliente_id=$this->get_cliente_id();
+       
+      $today=date("Y-m-d");
+
+       
+      $sql="SELECT keyfieldlink FROM sys_field WHERE tableid='$tableid' AND tablelink='$mastertableid'" ;
+      $result=  $this->select($sql);
+      if(count($result)>0)
+      {
+          $keyfieldlink=$result[0]['keyfieldlink'];
+      }
+      $keyfieldlink= strtolower($keyfieldlink);
+      $keyfieldlink_array=  explode(",", $keyfieldlink);
+      $keyfieldlink_order=$keyfieldlink_array[0];
+      
+      
+      
+      if($term=="sys_recent")
+      {
+          $sql="SELECT recordid_,$keyfieldlink FROM $linkedtable WHERE $search_term AND recordid_ not like '1%' ORDER BY recordid_ LIMIT 100 ";
+      }
+      else
+      {
+         if($term=="sys_all")
+         {
+             $sql="SELECT recordid_,$keyfieldlink FROM $linkedtable WHERE $search_term ORDER BY $keyfieldlink_order ";
+         }
+         else
+         {
+             $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfieldlink like '%$term%' ORDER BY $keyfieldlink_order ";
+         }
+      }
+      $result=  $this->select($sql);
+      return $result;
+    }
+    
     function get_field_linkedmaster($tableid,$recordid,$linkedmasterid)
     {
       $sql="SELECT keyfieldlink FROM sys_field WHERE tableid='$tableid' AND tablelink='$linkedmasterid'" ;
@@ -14292,7 +14330,7 @@ class Sys_model extends CI_Model {
             $currentvalues[$row['settingid']]=$row['value'];
         }
         $lookuptableid=$this->Sys_model->db_get_value('sys_field','lookuptableid',"tableid='$tableid' AND fieldid='$fieldid'");
-        $lookup_options=$this->Sys_model-> get_lookuptable($lookuptableid);
+        $lookup_options=$this->Sys_model->get_lookuptable($lookuptableid);
         $lookup_options_string=";";
         foreach ($lookup_options as $key => $lookup_option) {
             $lookup_options_string=$lookup_options_string.";".$lookup_option['itemcode'];

@@ -40,14 +40,18 @@ class Rest_controller extends CI_Controller {
                     $sql=$sql.",";
                 }
                 $sql=$sql.$column_id;
-                if($where=='TRUE')
+                if($searchTerm!='')
                 {
-                    $where=$where." AND ($column_id like '%$searchTerm%'";
-                }
-                else
-                {
-                    $where=$where." OR $column_id like '%$searchTerm%'";
-                }
+                    if($where=='TRUE')
+                    {
+                        $where=$where." AND ($column_id like '%$searchTerm%'";
+                    }
+                    else
+                    {
+                        $where=$where." OR $column_id like '%$searchTerm%'";
+                    } 
+                }   
+                
                 
             }
             
@@ -64,7 +68,17 @@ class Rest_controller extends CI_Controller {
         {
             $sum_query="SELECT $sum_fields FROM user_$table";
         }
-        $where=$where.")";
+        if($searchTerm!='')
+        {
+            $where=$where.")";
+        }
+        
+        if(array_key_exists("master_tableid", $post))
+        {
+            $master_tableid=$post['master_tableid'];
+            $master_recordid=$post['master_recordid'];
+            $where=$where." AND (recordid".$master_tableid."_='$master_recordid') ";
+        }
         $sql=$sql." FROM user_$table WHERE $where AND (recordstatus_ is null OR recordstatus_!='temp') ) AS risultati LEFT JOIN user_".$table."_owner ON risultati.recordid_=user_".$table."_owner.recordid_ where ownerid_ is null OR ownerid_=1 ";
         $return['records']=$this->Sys_model->get_records($table,$sql,'recordid_','desc');
         echo json_encode($return);
@@ -100,14 +114,19 @@ class Rest_controller extends CI_Controller {
     {
         $post=$_POST;
         $table=$post['table'];
+        $groupby_field='dealstage';
         $searchTerm=$post['searchTerm'];
         $where='TRUE';
         $sql="";
         $sql="select risultati.recordid_,risultati.recordid_ as id, risultati.description as name, risultati.startdate as start, risultati.duedate as end FROM (SELECT *";
         $sql=$sql." FROM user_$table WHERE $where AND (recordstatus_ is null OR recordstatus_!='temp') ) AS risultati LEFT JOIN user_".$table."_owner ON risultati.recordid_=user_".$table."_owner.recordid_ where ownerid_ is null OR ownerid_=1 ";
-        $return['records']=$this->Sys_model->get_records($table,$sql,'start','asc');
-        foreach ($return as $key => $value) {
-            
+        $records=$this->Sys_model->get_records($table,$sql,'start','asc',0,100);
+        $return['groups']=array();
+        
+        foreach ($records as $key => $record) {
+            $groupby_field_value=$record[$groupby_field];
+            $return['groups'][$groupby_field_value]['description']=$groupby_field_value;
+            $return['groups'][$groupby_field_value]['records']=$record;
         }
         echo json_encode($return);
     }
@@ -144,6 +163,60 @@ class Rest_controller extends CI_Controller {
         
         $tableid=$post['tableid'];
         $fields=$this->Sys_model->get_fields_table($tableid,'null',$recordid,'visualizzazione');
+        foreach ($fields as $key => $field) {
+            
+             $substring=substr($key, -1);
+            if($substring=='_')
+            {
+                unset($fields[$key]);
+            }
+            
+           
+            if(substr($key, 0, 1)=='_')
+            {
+                $fieldid=$field['fieldid'];
+                $fieldid=substr($fieldid, 1)."_";
+                $field['fieldid']=$fieldid;
+                $field['fieldtypeid']='linkedmaster';
+                
+                $fields[$fieldid]=$field;
+            }
+            else
+            {
+                $fields[$key]=$field;
+            }
+            
+            if($field['lookuptableid']!='')
+            {
+                $field['lookupitems']=$this->Sys_model->get_lookuptable($field['lookuptableid'],$field['fieldid']);
+                $fields[$key]=$field;
+            }
+        
+            
+        }
+        
+        if((array_key_exists('master_tableid', $post))&&(array_key_exists('master_recordid', $post)))
+        {
+            $master_tableid=$post['master_tableid'];
+            $master_recordid=$post['master_recordid'];
+            $master_fieldid="recordid".$master_tableid."_";
+            if(array_key_exists($master_fieldid, $fields))
+            {
+                $sql="SELECT keyfieldlink FROM sys_field WHERE tableid='$tableid' AND tablelink='$master_tableid'" ;
+                $result=  $this->Sys_model->select($sql);
+                if(count($result)>0)
+                {
+                    $keyfieldlink=$result[0]['keyfieldlink'];
+                }
+                $keyfieldlink= strtolower($keyfieldlink);
+                $value=$this->Sys_model->db_get_value("user_$master_tableid",$keyfieldlink,"recordid_='$master_recordid'");
+                $fields[$master_fieldid]['value']=$value;
+                $fields[$master_fieldid]['valuecode'][0]['value']=$value;
+                $fields[$master_fieldid]['valuecode'][0]['code']=$master_recordid;
+            }
+            
+            
+        }
         echo json_encode($fields);
     }
     
@@ -174,5 +247,33 @@ class Rest_controller extends CI_Controller {
         }
         
     }
+    
+    
+    public function get_autocomplete_data()
+    {
+        $post=$_POST;
+        $term=$post['term'];
+        $tableid=$post['tableid'];
+        $mastertableid=$post['mastertableid'];
+        $azienda['id']='00001';
+        $azienda['value']='swissbix';
+        $return[]=$azienda;
+        $azienda['id']='00002';
+        $azienda['value']='about-x';
+        $return[]=$azienda;
+        
+        $return=array();
+        $records_linkedmaster=$this->Sys_model->get_records_linkedmaster2($tableid, $mastertableid,$term);
+        foreach ($records_linkedmaster as $key => $record_linkedmaster) {
+            $record_linkedmaster=array_values($record_linkedmaster);
+            $record['id']=$record_linkedmaster[0];
+            $record['value']=$record_linkedmaster[1];
+            $return[]=$record;
+        }
+        
+        
+        echo json_encode($return);
+    }
+            
 }
 ?>
