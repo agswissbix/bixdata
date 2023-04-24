@@ -14317,7 +14317,7 @@ class Sys_model extends CI_Model {
         $settings=$this->add_setting($settings, 'default_save', 'salva;salva e chiudi;salva e nuovo;salva e nuovo-salva e chiudi;allega salva e nuovo;salva e ripeti', $currentvalues, 'salva',$userid);
         $settings=$this->add_setting($settings, 'default_viewid', '', $currentvalues, '0',$userid);
         $settings=$this->add_setting($settings, 'default_recordstab', '', $currentvalues, 'Tabella',$userid);
-        $settings=$this->add_setting($settings, 'default_recordtab', '', $currentvalues, 'Dati',$userid);
+        $settings=$this->add_setting($settings, 'default_recordtab', '', $currentvalues, 'Fields',$userid);
         $fields=  $this->db_get('sys_field', '*', "tableid='$tableid'", 'ORDER BY fieldid');
         $dem_mail_field_options="";
         foreach ($fields as $key => $field) {
