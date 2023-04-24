@@ -492,6 +492,14 @@ class Bix_datagateway_controller extends CI_Controller {
         $sync_field= $this->db_get_value('sys_table', 'sync_field', "id='$bixdata_table'");
         $sync_condition= $this->db_get_value('sys_table', 'sync_condition', "id='$bixdata_table'");
         $sync_order= $this->db_get_value('sys_table', 'sync_order', "id='$bixdata_table'");
+        if($sync_service=='Bixdata')
+        {
+            $servername = "10.0.0.23";
+            $username = "vtenext";
+            $password = "Jbt$5qNbJXg";
+            $database= "bixdata";
+            $conn = new mysqli($servername, $username, $password, $database);
+        }
         if($sync_service=='JDoc')
         {
             $servername = "10.0.0.23";
@@ -542,7 +550,7 @@ class Bix_datagateway_controller extends CI_Controller {
         echo $sync_order."<br/>";
         echo "SELECT * FROM $sync_table $condition $order"."<br/><br/>";
         
-        if(($sync_service=='JDoc')||($sync_service=='Vte'))
+        if(($sync_service=='JDoc')||($sync_service=='Vte')||($sync_service=='Bixdata'))
         {
             $rows=$this->conn_select($conn,"SELECT * FROM $sync_table $condition $order");
         }
@@ -554,6 +562,7 @@ class Bix_datagateway_controller extends CI_Controller {
                 $rows[]=$row;
             }
         }
+        $counter=0;
         foreach ($rows as $key => $row) {
             $sync_fields=array();
             foreach ($row as $key => $field) {
@@ -570,16 +579,21 @@ class Bix_datagateway_controller extends CI_Controller {
             $sync_field_bixdata=$bixdata_fields[$sync_field];
             echo "SYNC FIELD BIXDATA <br/>";
             echo $sync_field_bixdata."<br/>";
+           
             $this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
+            $counter++;
+            echo "Counter $counter";
             echo "<br/><br/><br/><br/>";
+            
+            
             
         }
         
         
-        $sys_table_link_rows=$this->db_get('sys_table_link','*',"tableid='$bixdata_table'");
+        $sys_table_link_rows=$this->db_get('sys_table_link','*',"tablelinkid='$bixdata_table'");
         foreach ($sys_table_link_rows as $key => $sys_table_link_row) {
-            $linked_tableid=$sys_table_link_row['tablelinkid'];
-            $this->link_records($bixdata_table,$linked_tableid);
+            $tableid=$sys_table_link_row['tableid'];
+            $this->link_records($tableid,$bixdata_table);
         }
          
     }
@@ -601,14 +615,17 @@ class Bix_datagateway_controller extends CI_Controller {
     {
         $master_field=$this->db_get_value('sys_field', 'master_field', "tableid='$link_tableid' AND tablelink='$master_tableid'");
         $linked_field=$this->db_get_value('sys_field', 'linked_field', "tableid='$link_tableid' AND tablelink='$master_tableid'");
-        $sql="
-            UPDATE user_$link_tableid
-            INNER join user_$master_tableid ON user_$link_tableid.$linked_field=user_$master_tableid.$master_field
-            SET user_$link_tableid.recordid".$master_tableid."_=user_$master_tableid.recordid_
-            WHERE true
-            ";
-        echo $sql;
-        $this->execute_query($sql);
+        if(($master_field!='')&&($linked_field!=''))
+        {
+            $sql="
+                UPDATE user_$link_tableid
+                INNER JOIN user_$master_tableid ON user_$link_tableid.$linked_field=user_$master_tableid.$master_field
+                SET user_$link_tableid.recordid".$master_tableid."_=user_$master_tableid.recordid_
+                WHERE true
+                ";
+            echo $sql;
+            $this->execute_query($sql);
+        }
     }
     
     

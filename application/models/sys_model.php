@@ -4439,7 +4439,7 @@ class Sys_model extends CI_Model {
                         }
                         if($field_type=='Utente')
                         {
-                            $field=$this->get_user_nomecognome($field);
+                            $field=$this->get_user_nome($field);
                         }
                         if($field_type=='Data')
                         {
@@ -10417,7 +10417,7 @@ class Sys_model extends CI_Model {
          }
          else
          {
-             $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfieldlink like '%$term%' ORDER BY $keyfieldlink_order ";
+             $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfieldlink like '%$term%' ORDER BY $keyfieldlink_order LIMIT 20";
          }
       }
       $result=  $this->select($sql);
@@ -12929,6 +12929,20 @@ class Sys_model extends CI_Model {
             return '';
         }
     }
+    
+    public function get_user_nome($userid)
+    {
+        if(($userid!=null)&&($userid!=''))
+        {
+            $user_info=  $this->get_user_info($userid);
+            return $user_info['firstname'];
+        }
+        else
+        {
+            return '';
+        }
+    }
+    
     public function get_user_info($userid)
     {
         $sql="SELECT * FROM sys_user where id=$userid";
@@ -14301,6 +14315,9 @@ class Sys_model extends CI_Model {
         $settings=$this->add_setting($settings, 'allegati_filecontainer_type', 'thumbnail;details', $currentvalues, 'thumbnail',$userid);
         $settings=$this->add_setting($settings, 'stampa_elenco_limit_number', '', $currentvalues, '20',$userid);
         $settings=$this->add_setting($settings, 'default_save', 'salva;salva e chiudi;salva e nuovo;salva e nuovo-salva e chiudi;allega salva e nuovo;salva e ripeti', $currentvalues, 'salva',$userid);
+        $settings=$this->add_setting($settings, 'default_viewid', '', $currentvalues, '0',$userid);
+        $settings=$this->add_setting($settings, 'default_recordstab', '', $currentvalues, 'Tabella',$userid);
+        $settings=$this->add_setting($settings, 'default_recordtab', '', $currentvalues, 'Dati',$userid);
         $fields=  $this->db_get('sys_field', '*', "tableid='$tableid'", 'ORDER BY fieldid');
         $dem_mail_field_options="";
         foreach ($fields as $key => $field) {
