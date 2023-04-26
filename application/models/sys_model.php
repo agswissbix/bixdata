@@ -2861,7 +2861,9 @@ class Sys_model extends CI_Model {
                 $column['id']="recordid".strtolower($preference_column['tablelink'])."_";
                 $column['fieldtypeid']='linked';
                 $column['results_fieldtypeid']='linked';
-                $column['linkedtableid']=$preference_column['tablelink'];
+                $linkedtableid=$preference_column['tablelink'];
+                $column['linkedtableid']=$linkedtableid;
+                $column['keyfieldlink']=$this->db_get_value('sys_field','keyfieldlink',"tableid='$idarchivio' and tablelink='$linkedtableid'");
             }
             else
             {

@@ -194,7 +194,7 @@ function get_file_extension($file_name) {
 
 function isempty($value)
 {
-    if(($value=='')||($value==null)||($value=='0000-00-00'))
+    if(($value=='')||($value==null)||($value=='0000-00-00')||($value=='None'))
     {
         return true;
     }
@@ -235,7 +235,7 @@ function db_convert_string($value)
 
 function isnotempty($value)
     {
-        if(($value!='')&&($value!='00:00:00')&&($value!=null)&&($value!='undefined'))
+        if(($value!='')&&($value!='00:00:00')&&($value!=null)&&($value!='undefined')&&($value!='None'))
         {
             return true;
         }
