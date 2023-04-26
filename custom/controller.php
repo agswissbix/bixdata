@@ -498,9 +498,9 @@ function set_vte_invoiced($conn,$invoiceid)
             if(!isEmpty($timesheetid))
             {
                 $sql="
-                    UPDATE vte_timesheetcf
-                    SET cf_nit_1546='Invoiced'
-                    WHERE timesheetid='$timesheetid'
+                    UPDATE user_timesheet
+                    SET invoicestatus='Invoiced'
+                    WHERE recordid_='$timesheetid'
                     ";
                 $conn->query($sql);
                 echo $sql."<br/>";

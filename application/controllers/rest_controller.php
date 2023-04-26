@@ -346,7 +346,7 @@ class Rest_controller extends CI_Controller {
             $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
         
-        //$this->custom_update($tableid, $recordid);
+        $this->custom_update($tableid, $recordid);
         
     }
     

@@ -13,13 +13,13 @@ $totaltotal=0;
 </div>
 
 <?php
-$conn_vte = connection();
+$conn_bixdata = connection();
 
 $sql="
     SELECT *
     FROM bix_invoices
     ";
-$invoices=$conn_vte->query($sql);
+$invoices=$conn_bixdata->query($sql);
 ?>
 
 
@@ -134,12 +134,12 @@ $invoices=$conn_vte->query($sql);
             serialized.push({name: 'test', value: "test"});
              $.ajax( {
                 type: "POST",
-                url: "controller/bexio_uploadinvoice.php",
+                url: "bexio_uploadinvoice.php",
                 data: serialized,
                 success: function( response ) {
                     //$('#content').html(response);
                     //refresh_risultati_ricerca();
-                    window.open('https://bixvte01.dc.swissbix.ch/swissbix/bixvte/api_bexio_set_invoices.php', '_self'); 
+                    window.open('http://localhost:8822/bixdata/custom/api_bexio_set_invoices.php', '_self'); 
 
                 },
                 error:function(){
@@ -185,7 +185,7 @@ $invoices=$conn_vte->query($sql);
                         FROM user_company
                         WHERE recordid_='$accountid'
                         ";
-                    $account= select_row($conn_vte, $sql);
+                    $account= select_row($conn_bixdata, $sql);
                     
                     $sql="
                     SELECT *
@@ -193,7 +193,7 @@ $invoices=$conn_vte->query($sql);
                     where bix_invoicesid='$bix_invoicesid'
                     order by bix_invoicesid asc
                     ";
-                    $invoice_rows=$conn_vte->query($sql);
+                    $invoice_rows=$conn_bixdata->query($sql);
 
                 ?>
                    
