@@ -354,6 +354,7 @@ class Rest_controller extends CI_Controller {
     {
         $row= $this->Sys_model->db_get_row("user_$tableid","*","recordid_='$recordid'");
         $fields=array();
+        
         if($tableid=='timesheet')
         {
             $date=$row['date'];
@@ -421,21 +422,19 @@ class Rest_controller extends CI_Controller {
             
             
             
-            $processstatus='To Process';
             $invoicestatus=$row['invoicestatus'];
-            if($invoicestatus!='Invoiced')
+            if(($invoicestatus!='Invoiced')&&($invoicestatus!='Service Contract')&&($invoicestatus!='Flat Service Contract'))
             {
                 $invoicestatus='To Process';
             }
                 
             
             
-            $servicecontractsid=null;
             $workprice=0;
             $travelprice=0;
             $totalprice=0;
             $fixedprice=0;//$project['fixedprice'];
-            $unit_price="140";//$service['unit_price'];
+            $unit_price=140;//$service['unit_price'];
             $itpbx_price=$company['ictpbx_price'];
             $sw_price=$company['sw_price'];
             $account_travelprice=$company['travel_price'];
@@ -650,8 +649,35 @@ class Rest_controller extends CI_Controller {
             $fields['totalprice']=$totalprice;
 
             
-            $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
+            
         }
+        
+        
+        if($tableid=='servicecontract')
+        {
+            $contracthours=$row['contracthours'];
+            $previousresidual=$row['previousresidual'];
+            $excludetravel=$row['excludetravel'];
+            $usedhours=0;
+            $residualhours=$contracthours;
+            $progress=0;
+            $fields['usedhours']=$usedhours;
+            
+            $timesheets= $this->Sys_model->db_get("user_timesheet","*","recordidservicecontract_='$recordid'");
+            foreach ($timesheets as $key => $timesheet) {
+                $usedhours=$usedhours+$timesheet['worktime_decimal'];
+                if($excludetravel!='1')
+                {
+                    $usedhours=$usedhours+$timesheet['traveltime_decimal'];
+                }
+            }
+            $fields['usedhours']=$usedhours;
+            $fields['residualhours']=$contracthours+$previousresidual-$usedhours;
+            $fields['progress']=($fields['usedhours']/($contracthours+$previousresidual))*100;
+        }
+        
+        
+        $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
         
     }
     

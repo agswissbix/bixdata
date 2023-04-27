@@ -139,7 +139,7 @@ $invoices=$conn_bixdata->query($sql);
                 success: function( response ) {
                     //$('#content').html(response);
                     //refresh_risultati_ricerca();
-                    window.open('http://localhost:8822/bixdata/custom/api_bexio_set_invoices.php', '_self'); 
+                    window.open('http://bixcrm01:8822/bixdata/custom/api_bexio_set_invoices.php', '_self'); 
 
                 },
                 error:function(){

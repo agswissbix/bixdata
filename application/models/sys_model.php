@@ -11520,7 +11520,7 @@ class Sys_model extends CI_Model {
     
     
         
-    function get_records($tableid,$query,$order_key='',$order_ascdesc='',$offset_number='0',$limit_number='50')
+    function get_records($tableid,$query,$order_key='',$order_ascdesc='',$offset_number='0',$limit_number='100')
     {
         $userid= $this->get_userid();
         $columns=  $this->get_colums($tableid, $userid);
