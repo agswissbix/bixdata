@@ -204,7 +204,7 @@ $invoices=$conn_bixdata->query($sql);
                                     <div class="col s6">
                                         <label>
                                             <input type="checkbox" name="invoices[]" value="<?=$invoice['bix_invoicesid']?>" />
-                                            <span class="ragionesociale" style="color: black"><?= utf8_encode($account['companyname'])?></span>
+                                            <span class="ragionesociale" style="color: black"><?= $account['companyname']?></span>
                                          </label>
                                     </div>
                                     <div class="col s6">
