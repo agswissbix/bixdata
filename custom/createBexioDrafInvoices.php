@@ -24,10 +24,13 @@ function insert_product_row($insert_conn,$bix_invoicesid,$timesheet)
     }
     */
     $data= date('d/m/Y', strtotime($timesheet['date']));
-    $lastname="test";//$timesheet['last_name'];
-    $firstname="test";//$timesheet['first_name'];
+    $userid=$timesheet['user'];
+    $sql="SELECT * FROM sys_user WHERE id='$userid'";
+    $user= select_row($insert_conn, $sql);
+    $lastname=$user['firstname'];
+    $firstname=$user['lastname'];
     $description=$timesheet['description'];
-    $notes="test";//$timesheet['notes'];
+    //$notes="test";//$timesheet['notes'];
     
     if(!isEmpty($notes))
     {
