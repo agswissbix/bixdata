@@ -833,6 +833,39 @@ class Rest_controller extends CI_Controller {
         }
          // CARICAMENTO FATTURE IN BEXIO fine
     }
+    
+    
+    public function update_dealproject_status()
+    {
+        $serverName = "BIXCRM01";
+        $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
+        $conn = sqlsrv_connect( $serverName, $connectionInfo); 
+        
+        $deals= $this->Sys_model->db_get("user_deals","*","status!='Invoiced'");
+        foreach ($deals as $key => $deal) {
+            $sql="SELECT * FROM A1001 WHERE F1001=....";
+            $row=$this->select_row($conn, $sql);
+            if($row!=null)
+            {
+                $updated_status=$row['F1001'];
+                $fields['status']=$updated_status;
+                $this->Sys_model->update_record('user_deals',1,$fields,"recordid_='$recordid'");
+                $this->Sys_model->update_record('user_project',1,$fields,"recordid_='$recordid'");
+            }
+        }
+        $stmt = sqlsrv_query($conn, "SELECT * FROM A1029 WHERE F1061='$recordid_deal'");
+        
+    }
+    
+    function select_row($conn,$sql) {
+        $result = $conn->query($sql);
+        $rows = array();
+        while($row = mysqli_fetch_array($result))
+        {
+                return $row;
+        }
+        return null;
+    }
             
 }
 ?>
