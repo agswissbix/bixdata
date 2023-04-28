@@ -159,7 +159,7 @@ function insert($conn,$table,$fields)
     $insert=$insert.")";
     $values=$values.")";
     $sql=$insert." ".$values;
-    $sql= utf8_encode($sql);
+    //$sql= utf8_encode($sql);
     echo $sql."<br/>";
     $result=$conn->query($sql);
     if($result)

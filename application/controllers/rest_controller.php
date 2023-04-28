@@ -355,6 +355,7 @@ class Rest_controller extends CI_Controller {
         $row= $this->Sys_model->db_get_row("user_$tableid","*","recordid_='$recordid'");
         $fields=array();
         
+        //TIMESHEET
         if($tableid=='timesheet')
         {
             $date=$row['date'];
@@ -650,6 +651,15 @@ class Rest_controller extends CI_Controller {
 
             
             
+        }
+        
+        
+        //PROJECT
+        if($tableid=='project')
+        {
+            $completed=$row['completed'];
+            $recordid_deal=$row['recordiddeal_'];
+            $fields['']="";
         }
         
         
