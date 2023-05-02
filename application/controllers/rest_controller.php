@@ -895,19 +895,19 @@ class Rest_controller extends CI_Controller {
         $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
         $conn = sqlsrv_connect( $serverName, $connectionInfo); 
         
-        $deals= $this->Sys_model->db_get("user_deals","*","status!='Invoiced'");
+        $deals= $this->Sys_model->db_get("user_deal","*","dealstage!='Invoiced'","ORDER BY recordid_ desc","LIMIT 10");
         foreach ($deals as $key => $deal) {
-            $sql="SELECT * FROM A1001 WHERE F1001=....";
+            $recordid_deal=$deal['recordid_'];
+            $sql="SELECT * FROM A1028 WHERE F1052='$recordid_deal'";
             $row=$this->select_row($conn, $sql);
             if($row!=null)
             {
-                $updated_status=$row['F1001'];
-                $fields['status']=$updated_status;
-                $this->Sys_model->update_record('user_deals',1,$fields,"recordid_='$recordid'");
-                $this->Sys_model->update_record('user_project',1,$fields,"recordid_='$recordid'");
+                $updated_status=$row['f1033'];
+                $fields['dealstage']=$updated_status;
+                $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
+                //$this->Sys_model->update_record('user_project',1,$fields,"recordid_='$recordid'");
             }
         }
-        $stmt = sqlsrv_query($conn, "SELECT * FROM A1029 WHERE F1061='$recordid_deal'");
         
     }
     
