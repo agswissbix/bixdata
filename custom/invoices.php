@@ -256,7 +256,7 @@ $invoices=$conn_bixdata->query($sql);
                                             if($invoice_row['type']=='Timesheet')
                                             {
                                             ?>
-                                                <button data-target="modal1" class="btn modal-trigger" onclick="$('.modal-content').find('iframe').attr('src','http://bixcrm01:8000/get_record_path/timesheet/<?=$invoice_row['timesheetid']?>/')">Apri</button>
+                                                <button data-target="modal1" class="btn modal-trigger" onclick="$('.modal-content').find('iframe').attr('src','http://localhost:8000/get_record_path/timesheet/<?=$invoice_row['timesheetid']?>/')">Apri</button>
                                             <?php
                                             }
                                             ?>    
@@ -298,7 +298,7 @@ $invoices=$conn_bixdata->query($sql);
         </div>
     </div>
     
-    <div id="modal1" class="modal modalpopup  modal-fixed-footer">
+    <div id="modal1" class="modal modalpopup  modal-fixed-footer" style="height: 100%;margin-top: 0%;">
        <div class="modal-content">
          <iframe style="height:100%;width:100%" src="" ></iframe>
        </div>

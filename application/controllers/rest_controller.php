@@ -898,15 +898,17 @@ class Rest_controller extends CI_Controller {
         $deals= $this->Sys_model->db_get("user_deal","*","dealstage!='Invoiced'","ORDER BY recordid_ desc","LIMIT 10");
         foreach ($deals as $key => $deal) {
             $recordid_deal=$deal['recordid_'];
-            $sql="SELECT * FROM A1028 WHERE F1052='$recordid_deal'";
-            $row=$this->select_row($conn, $sql);
-            if($row!=null)
-            {
-                $updated_status=$row['f1033'];
-                $fields['dealstage']=$updated_status;
-                $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
-                //$this->Sys_model->update_record('user_project',1,$fields,"recordid_='$recordid'");
+            $stmt = sqlsrv_query($conn, "SELECT * FROM A1028 WHERE F1052='$recordid_deal'");
+            while($row = sqlsrv_fetch_array($stmt)) {
+                if($row!=null)
+                {
+                    $updated_status=$row['f1033'];
+                    $fields['dealstage']=$updated_status;
+                    $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
+                    //$this->Sys_model->update_record('user_project',1,$fields,"recordid_='$recordid'");
+                }
             }
+            
         }
         
     }

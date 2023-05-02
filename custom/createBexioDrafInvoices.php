@@ -13,16 +13,20 @@ function insert_product_row($insert_conn,$bix_invoicesid,$timesheet)
     $fields_details=array();
     
     // TODO
-    /*
-    if(($timesheet['serviceid']=='153460')||($timesheet['serviceid']=='66466'))
+    
+    if(($timesheet['service']=='Assistenza PBX')||($timesheet['service']=='Assistenza IT'))
     {
         $fields_details['count']=3400;
     }
-    if($timesheet['serviceid']=='66469')
+    if($timesheet['service']=='Assistenza SW')
     {
         $fields_details['count']=3401;
     }
-    */
+    if($timesheet['service']=='Printing')
+    {
+        $fields_details['count']=3505;
+    }
+    
     $data= date('d/m/Y', strtotime($timesheet['date']));
     $userid=$timesheet['user'];
     $sql="SELECT * FROM sys_user WHERE id='$userid'";
