@@ -247,7 +247,7 @@ $invoices=$conn_bixdata->query($sql);
                                             if($invoice_row['type']=='Ticket')
                                             {
                                             ?>
-                                                <button data-target="modal1" class="btn modal-trigger" onclick="$('.modal-content').find('iframe').attr('src','https://bixvte01.dc.swissbix.ch/index.php?module=HelpDesk&parenttab=Support&action=DetailView&record=<?=$invoice_row['ticketid']?>')">Apri</button>
+                                                <button data-target="modal1" class="btn modal-trigger" onclick="$('.modal-content').find('iframe').attr('src','')">Apri ticket</button>
                                             <?php
                                             }
                                             ?>
@@ -256,7 +256,7 @@ $invoices=$conn_bixdata->query($sql);
                                             if($invoice_row['type']=='Timesheet')
                                             {
                                             ?>
-                                                <button data-target="modal1" class="btn modal-trigger" onclick="$('.modal-content').find('iframe').attr('src','https://bixvte01.dc.swissbix.ch/index.php?module=Timesheet&parenttab=Tools&action=DetailView&record=<?=$invoice_row['timesheetid']?>')">Apri</button>
+                                                <button data-target="modal1" class="btn modal-trigger" onclick="$('.modal-content').find('iframe').attr('src','http://bixcrm01:8000/get_record_path/timesheet/<?=$invoice_row['timesheetid']?>/')">Apri</button>
                                             <?php
                                             }
                                             ?>    
