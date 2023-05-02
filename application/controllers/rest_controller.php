@@ -346,7 +346,7 @@ class Rest_controller extends CI_Controller {
             $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
         
-        //$this->custom_update($tableid, $recordid);
+        $this->custom_update($tableid, $recordid);
         
     }
     
@@ -355,7 +355,7 @@ class Rest_controller extends CI_Controller {
         $row= $this->Sys_model->db_get_row("user_$tableid","*","recordid_='$recordid'");
         $fields=array();
         
-        //TIMESHEET
+        // TIMESHEET
         if($tableid=='timesheet')
         {
             $date=$row['date'];
@@ -441,49 +441,92 @@ class Rest_controller extends CI_Controller {
             $account_travelprice=$company['travel_price'];
 
 
-        
+            
 
-            if($invoicestatus=='To Process')
-            {
-
-
-                if($invoiceoption=='To check')
-                {
-                    $invoicestatus='To check';
-                }
-
-                if($invoiceoption=='Swisscom incident')
-                {
-                    $invoicestatus='Swisscom incident';
-                    $workprice=0;
-                    $travelprice=0;
-                }
+            
                 
-                if($invoiceoption=='Mauro incident')
-                {
-                    $invoicestatus='Mauro incident';
-                }
-
-                if($invoiceoption=='Under warranty')
-                {
-                    $invoicestatus='Under warranty';
-                }
-
-                if($invoiceoption=='Out of contract')
-                {
-                    $invoicestatus='Out of contract';
-                }
-
-                if($invoiceoption=='Commercial support')
-                {
-                    $invoicestatus='Commercial support';
-                }
-
-                if($invoiceoption=='Swisscom ServiceNow')
-                {
-                    $invoicestatus='Swisscom ServiceNow';
-                }
+            if($service=='Amministrazione')
+            {
+                $invoicestatus='Amministrazione';
+                $fields['recordidservicecontract_']='';
             }
+            
+            if($service=='Commerciale')
+            {
+                $invoicestatus='Commerciale';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($service=='Riunione')
+            {
+                $invoicestatus='Riunione';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($service=='Interno')
+            {
+                $invoicestatus='Interno';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($service=='Formazione e Test')
+            {
+                $invoicestatus='Formazione e Test';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($service=='Formazione Apprendista')
+            {
+                $invoicestatus='Formazione Apprendista';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($invoiceoption=='To check')
+            {
+                $invoicestatus='To check';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($invoiceoption=='Swisscom incident')
+            {
+                $invoicestatus='Swisscom incident';
+                $workprice=0;
+                $travelprice=0;
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($invoiceoption=='Mauro incident')
+            {
+                $invoicestatus='Mauro incident';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($invoiceoption=='Under Warranty')
+            {
+                $invoicestatus='Under warranty';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($invoiceoption=='Out of contract')
+            {
+                $invoicestatus='Out of contract';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($invoiceoption=='Commercial support')
+            {
+                $invoicestatus='Commercial support';
+                $fields['recordidservicecontract_']='';
+            }
+
+            if($invoiceoption=='Swisscom ServiceNow')
+            {
+                $invoicestatus='Swisscom ServiceNow';
+                $fields['recordidservicecontract_']='';
+            }
+                
+                
+            
 
             if($invoicestatus=='To Process')
             {
@@ -514,7 +557,7 @@ class Rest_controller extends CI_Controller {
                         if($totaltimedecimal==0.25)
                         {
                             $sql="SELECT * FROM user_servicecontract 
-                            where  recordidcompany_='$recordid_company' and (type like '%PBX%')  and (contract_status is null or (status<>'Complete' and status<>'Archived')) 
+                            where  recordidcompany_='$recordid_company' and (type like '%PBX%')  and (status is null or (status<>'Complete' and status<>'Archived')) 
                             ";
                         }
                         else
@@ -534,7 +577,7 @@ class Rest_controller extends CI_Controller {
                     }
 
                     //Hosting
-                    if($serviceid=='Assistenza Web Hosting')
+                    if($service=='Assistenza Web Hosting')
                     {
                         $sql="SELECT * FROM user_servicecontract 
                         where  recordidcompany_='$recordid_company' and (service='298798' OR services like '%Hosting%' )  and (status is null or (status<>'Complete' and status<>'Archived')) 
@@ -542,7 +585,7 @@ class Rest_controller extends CI_Controller {
                     }
 
                     //Printing
-                    if($serviceid=='Printing')
+                    if($service=='Printing')
                     {
                         $sql="SELECT * FROM user_servicecontract 
                         where  recordidcompany_='$recordid_company' and (service='636695' OR services like '%Printing%' )  and (status is null or (status<>'Complete' and status<>'Archived')) 
@@ -589,7 +632,7 @@ class Rest_controller extends CI_Controller {
                 {
 
                     $invoicestatus='To Invoice';
-
+                    $fields['recordidservicecontract_']='';
 
                     if(($service=='Assistenza SW' )&&(($sw_price != null)&& ($sw_price != '') &&($sw_price != 0)))
                     {
@@ -654,7 +697,7 @@ class Rest_controller extends CI_Controller {
         }
         
         
-        //PROJECT
+        // PROJECT
         if($tableid=='project')
         {
             $completed=$row['completed'];
@@ -663,6 +706,7 @@ class Rest_controller extends CI_Controller {
         }
         
         
+        // SERVICECONTRACT
         if($tableid=='servicecontract')
         {
             $contracthours=$row['contracthours'];
