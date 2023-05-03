@@ -355,7 +355,7 @@ class Rest_controller extends CI_Controller {
         $row= $this->Sys_model->db_get_row("user_$tableid","*","recordid_='$recordid'");
         $fields=array();
         
-        // TIMESHEET
+//------TIMESHEET---------------------------------------------------------------------------------------
         if($tableid=='timesheet')
         {
             $date=$row['date'];
@@ -697,17 +697,30 @@ class Rest_controller extends CI_Controller {
         }
         
         
-        // PROJECT
+//------PROJECT---------------------------------------------------------------------------------------------
         if($tableid=='project')
         {
             $completed=$row['completed'];
             $recordid_deal=$row['recordiddeal_'];
-            $fields['projectcompleted']=$completed;
-            $this->Sys_model->update_record("deal",1,$fields,"recordid_='$recordid_deal'");
+            $fields_deal=array();
+            $usedhours=0;
+            
+            
+            // aggiornamento ore totali in base ai timesheet
+            $timesheets= $this->Sys_model->db_get("user_timesheet","*","recordidproject_='$recordid'");
+            foreach ($timesheets as $key => $timesheet) {
+                $usedhours=$usedhours+$timesheet['worktime_decimal'];
+            }
+            $fields['usedhours']=$usedhours;
+            $fields_deal['usedhours']=$usedhours;
+
+            // aggiornamento del relativo deal con lo stato completed
+            $fields_deal['projectcompleted']=$completed;
+            $this->Sys_model->update_record("deal",1,$fields_deal,"recordid_='$recordid_deal'");
         }
         
         
-        // SERVICECONTRACT
+//------SERVICECONTRACT--------------------------------------------------------------------------------------
         if($tableid=='servicecontract')
         {
             $contracthours=$row['contracthours'];
@@ -783,7 +796,7 @@ class Rest_controller extends CI_Controller {
         $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
         $conn = sqlsrv_connect( $serverName, $connectionInfo); 
         
-        $deals= $this->Sys_model->db_get("user_deal","*","dealstage!='Invoiced' ","ORDER BY recordid_ desc");
+        $deals= $this->Sys_model->db_get("user_deal","*","dealstage is null or dealstage!='Invoiced' ","ORDER BY recordid_ desc");
         foreach ($deals as $key => $deal) {
             $fields=array();
             echo $deal['id']." - ".$deal['dealname']."<br/>";
@@ -813,53 +826,56 @@ class Rest_controller extends CI_Controller {
                     $recordid_project=$this->Sys_model->db_get_value("user_project","recordid_","recordiddeal_='$recordid_deal'");
                     echo $recordid_project."<br/>";
                     echo "<b>".$updated_status."</b><br/><br/>";
-                    $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
+                    
                     
                 }
             }
+            $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
             
+            // aggiornamento dealline
+            $deal_lines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid_deal'");
+            $deal_price=0;
+            $deal_cost_expectd=0;
+            $deal_cost_actual=0;
+            $deal_margin_expected=0;
+            $deal_margin_actual=0;
+            foreach ($deal_lines as $key => $deal_line) {
+                $recordid=$deal_line['recordid_'];
+                $price=$deal_line['price'];
+                $quantity=$deal_line['quantity'];
+                $unitexpectedcost=$deal_line['unitexpectedcost'];
+                $expectedcost=$deal_line['expectedcost'];
+                $expectedmargin=$deal_line['expectedmargin'];
+                $uniteffectivecost=$deal_line['uniteffectivecost'];
+                $effectivecost=$deal_line['effectivecost'];
+                $quantity_actual=$deal_line['quantity_actual'];
+                $quantity_difference=$deal_line['quantity_difference'];
+                $price_actual=$deal_line['price_actual'];
+                $price_difference=$deal_line['price_difference'];
+                $margin_actual=$deal_line['margin_actual'];
+
+                $deal_line['expectedmargin']=$price-$expectedcost;
+
+                if(isempty($quantity_actual))
+                {
+                   $cost_actual=$uniteffectivecost*$quantity; 
+
+                }
+                else
+                {
+                    $cost_actual=$uniteffectivecost*$quantity_actual;
+                }
+                $deal_line['effectivecost']=$cost_actual;
+                $deal_line['margin_actual']=$price-$cost_actual;
+
+
+                $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid'");
+                echo "UPDATED $recordid_deal <br/>";
+            }
+        
         }
         
-        // aggiornamento dealline
-        $deal_lines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid_deal'");
-        $deal_price=0;
-        $deal_cost_expectd=0;
-        $deal_cost_actual=0;
-        $deal_margin_expected=0;
-        $deal_margin_actual=0;
-        foreach ($deal_lines as $key => $deal_line) {
-            $recordid=$deal_line['recordid_'];
-            $price=$deal_line['price'];
-            $quantity=$deal_line['quantity'];
-            $unitexpectedcost=$deal_line['unitexpectedcost'];
-            $expectedcost=$deal_line['expectedcost'];
-            $expectedmargin=$deal_line['expectedmargin'];
-            $uniteffectivecost=$deal_line['uniteffectivecost'];
-            $effectivecost=$deal_line['effectivecost'];
-            $quantity_actual=$deal_line['quantity_actual'];
-            $quantity_difference=$deal_line['quantity_difference'];
-            $price_actual=$deal_line['price_actual'];
-            $price_difference=$deal_line['price_difference'];
-            $margin_actual=$deal_line['margin_actual'];
-            
-            $deal_line['expectedmargin']=$price-$expectedcost;
-            
-            if(isempty($quantity_actual))
-            {
-               $cost_actual=$uniteffectivecost*$quantity; 
-               
-            }
-            else
-            {
-                $cost_actual=$uniteffectivecost*$quantity_actual;
-            }
-            $deal_line['effectivecost']=$cost_actual;
-            $deal_line['margin_actual']=$price-$cost_actual;
-            
-            
-            $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid'");
-            echo "UPDATED $recordid_deal <br/>";
-        }
+        
     }
     
     
