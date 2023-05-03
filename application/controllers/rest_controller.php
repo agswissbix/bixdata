@@ -703,7 +703,7 @@ class Rest_controller extends CI_Controller {
             $completed=$row['completed'];
             $recordid_deal=$row['recordiddeal_'];
             $fields['projectcompleted']=$completed;
-            $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
+            $this->Sys_model->update_record("deal",1,$fields,"recordid_='$recordid_deal'");
         }
         
         
