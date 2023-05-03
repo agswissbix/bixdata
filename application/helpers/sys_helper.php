@@ -194,7 +194,7 @@ function get_file_extension($file_name) {
 
 function isempty($value)
 {
-    if(($value=='')||($value==null)||($value=='0000-00-00')||($value=='None'))
+    if(($value=='')||($value==null)||($value=='0000-00-00')||($value=='None')||($value=='0.00'))
     {
         return true;
     }

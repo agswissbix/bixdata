@@ -434,7 +434,7 @@ class Rest_controller extends CI_Controller {
             $workprice=0;
             $travelprice=0;
             $totalprice=0;
-            $fixedprice=0;//$project['fixedprice'];
+            $fixedprice=$project['fixedprice'];
             $unit_price=140;//$service['unit_price'];
             $itpbx_price=$company['ictpbx_price'];
             $sw_price=$company['sw_price'];
@@ -532,7 +532,7 @@ class Rest_controller extends CI_Controller {
             {
                 if($project != null)
                 {
-                    if($fixedprice==1) 
+                    if($fixedprice=='Si') 
                     {
                        $invoicestatus='Fixed price Project'; 
                     }
@@ -702,7 +702,8 @@ class Rest_controller extends CI_Controller {
         {
             $completed=$row['completed'];
             $recordid_deal=$row['recordiddeal_'];
-            $fields['']="";
+            $fields['projectcompleted']=$completed;
+            $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
         }
         
         
@@ -774,8 +775,52 @@ class Rest_controller extends CI_Controller {
     }
     
     
-    public function update_deal($recordid_deal)
+    public function update_deals()
     {
+        // aggiornamento stato da adiuto
+        
+        $serverName = "BIXCRM01";
+        $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
+        $conn = sqlsrv_connect( $serverName, $connectionInfo); 
+        
+        $deals= $this->Sys_model->db_get("user_deal","*","dealstage!='Invoiced' ","ORDER BY recordid_ desc");
+        foreach ($deals as $key => $deal) {
+            $fields=array();
+            echo $deal['id']." - ".$deal['dealname']."<br/>";
+            $recordid_deal=$deal['recordid_'];
+            $hubspot_dealuser=$deal['dealuser'];
+            $bixdata_dealuser= $this->Sys_model->db_get_row("sys_user","*","hubspot_dealuser='$hubspot_dealuser'"); 
+            if($bixdata_dealuser!=null)
+            {
+                $fields['dealuser1']=$bixdata_dealuser['id'];
+                $fields['adiuto_dealuser']=$bixdata_dealuser['adiutoid'];
+            }
+            
+            $stmt = sqlsrv_query($conn, "SELECT * FROM VA1028 WHERE F1052='$recordid_deal' AND FENA=-1");
+            while($row = sqlsrv_fetch_array($stmt)) {
+                if($row!=null)
+                {
+                    $updated_status=$row['F1033'];
+                    $tech_adiutoid=$row['F1067'];
+                    $fields['adiuto_tech']=$tech_adiutoid;
+                    $bixdata_tech= $this->Sys_model->db_get_row("sys_user","*","adiutoid='$tech_adiutoid'"); 
+                    if($bixdata_tech!=null)
+                    {
+                        $fields['project_assignedto']=$bixdata_tech['id'];
+                    }
+                    
+                    $fields['dealstage']=$updated_status;
+                    $recordid_project=$this->Sys_model->db_get_value("user_project","recordid_","recordiddeal_='$recordid_deal'");
+                    echo $recordid_project."<br/>";
+                    echo "<b>".$updated_status."</b><br/><br/>";
+                    $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
+                    
+                }
+            }
+            
+        }
+        
+        // aggiornamento dealline
         $deal_lines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid_deal'");
         $deal_price=0;
         $deal_cost_expectd=0;
@@ -889,30 +934,7 @@ class Rest_controller extends CI_Controller {
     }
     
     
-    public function update_dealproject_status()
-    {
-        $serverName = "BIXCRM01";
-        $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
-        $conn = sqlsrv_connect( $serverName, $connectionInfo); 
-        
-        $deals= $this->Sys_model->db_get("user_deal","*","dealstage!='Invoiced'","ORDER BY recordid_ desc","LIMIT 10");
-        foreach ($deals as $key => $deal) {
-            $recordid_deal=$deal['recordid_'];
-            $stmt = sqlsrv_query($conn, "SELECT * FROM A1028 WHERE F1052='$recordid_deal'");
-            while($row = sqlsrv_fetch_array($stmt)) {
-                if($row!=null)
-                {
-                    $updated_status=$row['f1033'];
-                    $fields['dealstage']=$updated_status;
-                    $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
-                    //$this->Sys_model->update_record('user_project',1,$fields,"recordid_='$recordid'");
-                }
-            }
-            
-        }
-        
-    }
-    
+  
     function select_row($conn,$sql) {
         $result = $conn->query($sql);
         $rows = array();
