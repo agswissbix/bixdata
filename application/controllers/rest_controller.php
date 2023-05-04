@@ -964,7 +964,7 @@ class Rest_controller extends CI_Controller {
     
     function api_hubspot_update_dealstage($type,$dealid,$dealstage)
     {
-        var_dump(file('http://www.example.com/'));
+        var_dump(file("http://10.0.0.23:8822/jdocweb/index.php/sys_viewcontroller/api_hubspot_update_dealstage/$type/$dealid/$dealstage"));
     }
             
 }
