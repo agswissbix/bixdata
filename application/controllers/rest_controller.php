@@ -964,7 +964,7 @@ class Rest_controller extends CI_Controller {
     
     function api_hubspot_update_dealstage($type,$dealid,$dealstage)
     {
-        echo file('http://www.example.com/');
+        var_dump(file('http://www.example.com/'));
     }
             
 }
