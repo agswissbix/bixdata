@@ -960,6 +960,12 @@ class Rest_controller extends CI_Controller {
         }
         return null;
     }
+    
+    
+    function api_hubspot_update_dealstage($type,$dealid,$dealstage)
+    {
+        echo file('http://www.example.com/');
+    }
             
 }
 ?>
