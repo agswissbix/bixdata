@@ -796,12 +796,14 @@ class Rest_controller extends CI_Controller {
         $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
         $conn = sqlsrv_connect( $serverName, $connectionInfo); 
         
-        $deals= $this->Sys_model->db_get("user_deal","*","dealstage is null or dealstage!='Invoiced' ","ORDER BY recordid_ desc");
+        $deals= $this->Sys_model->db_get("user_deal","*","syncstatus='Si'","ORDER BY recordid_ desc");
         foreach ($deals as $key => $deal) {
             $fields=array();
             echo $deal['id']." - ".$deal['dealname']."<br/>";
             $recordid_deal=$deal['recordid_'];
             $hubspot_dealuser=$deal['dealuser'];
+            $type=$deal['type'];
+            $hubspot_id=$deal['hubspot_id'];
             $bixdata_dealuser= $this->Sys_model->db_get_row("sys_user","*","hubspot_dealuser='$hubspot_dealuser'"); 
             if($bixdata_dealuser!=null)
             {
@@ -832,6 +834,7 @@ class Rest_controller extends CI_Controller {
             }
             $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
             
+                    
             // aggiornamento dealline
             $deal_lines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid_deal'");
             $deal_price=0;
@@ -962,9 +965,30 @@ class Rest_controller extends CI_Controller {
     }
     
     
+    
+    function api_hubspot_sync_deals()
+    {
+        $deals= $this->Sys_model->db_get("user_deal","*","syncstatus='Si'","ORDER BY recordid_ desc");
+        foreach ($deals as $key => $deal) {
+            echo $deal['id']." - ".$deal['dealname']."<br/>";
+            $type=$deal['type'];
+            $hubspot_id=$deal['hubspot_id'];
+            $dealstage=$deal['dealstage'];
+            if((isnotempty($type))&&(isnotempty($hubspot_id))&&(isnotempty($dealstage)))
+            {
+                $dealstage= str_replace(" ", "", $dealstage);
+                $this->api_hubspot_update_dealstage($type,$hubspot_id,$dealstage);
+            }
+        }
+        
+        
+    }
+    
     function api_hubspot_update_dealstage($type,$dealid,$dealstage)
     {
-        var_dump(file("http://10.0.0.23:8822/jdocweb/index.php/sys_viewcontroller/api_hubspot_update_dealstage/$type/$dealid/$dealstage"));
+        $url="http://10.0.0.23:8822/jdocweb/index.php/sys_viewcontroller/api_hubspot_update_dealstage/$type/$dealid/$dealstage";
+        echo $url."<br/><br/>";
+        var_dump(file($url));
     }
             
 }
