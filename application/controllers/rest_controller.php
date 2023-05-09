@@ -548,7 +548,7 @@ class Rest_controller extends CI_Controller {
                     if($service=='Assistenza IT')
                     {
                         $sql="SELECT * FROM user_servicecontract 
-                        where  recordidcompany_='$recordid_company' and (service='66466' OR services like '%ICT%' ) and (type like '%Monte Ore%')  and (status is null or (status<>'Complete' and status<>'Archived')) 
+                        where  recordidcompany_='$recordid_company' and (service='66466' OR services like '%ICT%' ) and (type='Monte Ore')  and (status is null or (status<>'Complete' and status<>'Archived')) 
                         ";
                     }
 
@@ -557,13 +557,13 @@ class Rest_controller extends CI_Controller {
                         if($totaltimedecimal==0.25)
                         {
                             $sql="SELECT * FROM user_servicecontract 
-                            where  recordidcompany_='$recordid_company' and (type like '%PBX%')  and (status is null or (status<>'Complete' and status<>'Archived')) 
+                            where  recordidcompany_='$recordid_company' and (type='Manutenzione PBX')  and (status is null or (status<>'Complete' and status<>'Archived')) 
                             ";
                         }
                         else
                         {
                             $sql="SELECT * FROM user_servicecontract 
-                            where  recordidcompany_='$recordid_company' and (service='153460' OR services like '%PBX%' ) and (type like '%Monte Ore%')  and (status is null or (status<>'Complete' and status<>'Archived')) 
+                            where  recordidcompany_='$recordid_company' and (service='153460' OR services like '%PBX%' ) and (type='Monte Ore')  and (status is null or (status<>'Complete' and status<>'Archived')) 
                             ";
                         }
 
@@ -671,8 +671,8 @@ class Rest_controller extends CI_Controller {
 
                     if(!isEmpty($project))
                     {
-                        $project_status=$project['status'];
-                        if($project_status!='Completed')
+                        $completed=$project['completed'];
+                        if($completed!='Si')
                         {
                             $invoicestatus='To Invoice when Project completed';
                         }

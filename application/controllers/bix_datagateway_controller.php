@@ -203,7 +203,7 @@ class Bix_datagateway_controller extends CI_Controller {
         }
         if($tableid=='invoiceline')
         {
-            $this->update_invoiceline($recordid);
+            //$this->update_invoiceline($recordid);
         }
         
     }
@@ -218,10 +218,8 @@ class Bix_datagateway_controller extends CI_Controller {
         $salesorder=$this->db_get_row('user_salesorder','*',"recordid_='$recordid_salesorder'");
         
         $repetition_type=$salesorder['repetitiontype'];
-        $recordid_company=$salesorder['recordidcompany_'];
         
         $updated_field['repetitiontype']=$repetition_type;
-        $updated_field['recordidcompany_']=$recordid_company;
         
         if(($repetition_type=='Monthly'))
         {
