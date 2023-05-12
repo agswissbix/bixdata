@@ -197,6 +197,11 @@ class Bix_datagateway_controller extends CI_Controller {
             $recordid=$this->insert_record($tableid,1,$fields);
         }
         
+        if($tableid=='salesorder')
+        {
+            $this->update_salesorder($recordid);
+        }
+        
         if($tableid=='salesorderline')
         {
             $this->update_salesorderline($recordid);
@@ -206,6 +211,49 @@ class Bix_datagateway_controller extends CI_Controller {
             //$this->update_invoiceline($recordid);
         }
         
+    }
+    
+    public function update_salesorder($recordid_salesorder)
+    {
+        $salesorder= $this->db_get_row('user_salesorder','*',"recordid_=$recordid_salesorder");
+        $updated_fields=array();
+        $multiplier=1;
+        $repetitiontype=$salesorder['repetitiontype'];
+        $totalnet=$salesorder['totalnet'];
+        $totalgross=$salesorder['totalgross'];
+        if($repetitiontype=='Triennial')
+        {
+            $updated_fields['repetitiontype']='Triennale';
+            $multiplier=0.33;
+        }
+        if($repetitiontype=='Biennial')
+        {
+            $updated_fields['repetitiontype']='Biennale';
+            $multiplier=0.5;
+        }
+        if($repetitiontype=='Yearly')
+        {
+            $updated_fields['repetitiontype']='Annuale';
+        }
+        if($repetitiontype=='Quarterly')
+        {
+            $updated_fields['repetitiontype']='Trimestrale';
+            $multiplier=4;
+        }
+        if($repetitiontype=='Bimonthly')
+        {
+            $updated_fields['repetitiontype']='Bimensile';
+            $multiplier=6;
+        }
+        if($repetitiontype=='Monthly')
+        {
+            $updated_fields['repetitiontype']='Mensile';
+            $multiplier=12;
+        }
+        $updated_fields['totalnetyearly']=$totalnet*$multiplier;
+        $updated_fields['totalgross']=$totalgross*$multiplier;
+        $updated_fields['multiplier']=$multiplier;
+        $this->update_record('salesorder',1,$updated_fields,"recordid_='$recordid_salesorder'");
     }
     
     public function update_salesorderline($recordid_salesorderline)
@@ -218,121 +266,26 @@ class Bix_datagateway_controller extends CI_Controller {
         $salesorder=$this->db_get_row('user_salesorder','*',"recordid_='$recordid_salesorder'");
         
         $repetition_type=$salesorder['repetitiontype'];
+        $multiplier=$salesorder['multiplier'];
         
         $updated_field['repetitiontype']=$repetition_type;
+        $updated_field['total_net_yearly']=$salesorderline['price']*$multiplier;
+        $updated_field['recordidcompany_']=$salesorder['recordidcompany_'];
+        $updated_field['bexio_orderno']=$salesorder['documentnr'];
         
-        if(($repetition_type=='Monthly'))
+        $account_id=$salesorderline['bexio_account_id'];
+        $account= $this->db_get_row('user_bexio_account','*',"account_id='$account_id'");
+        if($account!=null)
         {
-            $updated_field['total_net_yearly']=$salesorderline['price']*12;
+            $updated_field['account_no']=$account['account_no'];
+            $updated_field['account']=$account['name'];
+            $updated_field['servicecontract_type']=$account['servicecontract_type'];
+            $updated_field['servicecontract_service']=$account['servicecontract_service'];
+            $updated_field['sector']=$account['sector'];
         }
-        if(($repetition_type=='Bimonthly'))
-        {
-            $updated_field['total_net_yearly']=$salesorderline['price']*6;
-        }
-        if(($repetition_type=='Quarterly'))
-        {
-            $updated_field['total_net_yearly']=$salesorderline['price']*4;
-        }
-        if(($repetition_type=='Yearly'))
-        {
-            $updated_field['total_net_yearly']=$salesorderline['price'];
-        }
-        if(($repetition_type=='Biennial'))
-        {
-            $updated_field['total_net_yearly']=$salesorderline['price']/2;
-        }
-        if(($repetition_type=='Triennial'))
-        {
-            $updated_field['total_net_yearly']=$salesorderline['price']/2;
-        }
-        
-        $account=$salesorderline['account'];
-        $updated_field['accountgroup']='Altro';
-        if($account=='Consulenze IT')
-        {
-            $updated_field['accountgroup']='Assistenza ICT'; 
-        }
-        if($account=='Consulenze Software')
-        {
-            $updated_field['accountgroup']='Software'; 
-        }
-        if($account=='Ricavi da Noleggio Hardware')
-        {
-            $updated_field['accountgroup']='Hardware e Software'; 
-        }
-        if($account=='Ricavi da Noleggio Stampanti')
-        {
-            $updated_field['accountgroup']='Printing'; 
-        }
-        if($account=='Vendita Assistenza Prioritaria')
-        {
-            $updated_field['accountgroup']='ICT'; 
-        }
-        if($account=='Vendita BE ALL Antivirus')
-        {
-            $updated_field['accountgroup']='BE ALL'; 
-        }
-        if($account=='Vendita BE ALL Assistance (All-In)')
-        {
-            $updated_field['accountgroup']='BE ALL'; 
-        }
-        if($account=='Vendita BE ALL Backup')
-        {
-            $updated_field['accountgroup']='BE ALL'; 
-        }
-        if($account=='Vendita DCS e Servizi Cloud')
-        {
-            $updated_field['accountgroup']='DCS e Cloud'; 
-        }
-        if($account=='Vendita Hardware e Software')
-        {
-            $updated_field['accountgroup']='Hardware e Software'; 
-        }
-        if($account=='Vendita Licenze ADIUTO')
-        {
-            $updated_field['accountgroup']='Software'; 
-        }
-        if($account=='Vendita PBX Assistenza')
-        {
-            $updated_field['accountgroup']='PBX'; 
-        }
-        if($account=='Vendita PBX Maintenance')
-        {
-            $updated_field['accountgroup']='PBX'; 
-        }
-        if($account=='Vendita Prodotti')
-        {
-            $updated_field['accountgroup']='Hardware e Software'; 
-        }
-        if($account=='Vendita Servizi')
-        {
-            $updated_field['accountgroup']='Hardware e Software'; 
-        }
-        if($account=='Vendita Servizi BeAll Monitoring Only')
-        {
-            $updated_field['accountgroup']='BE ALL'; 
-        }
-        if($account=='Vendita Servizi di Assistenza')
-        {
-            $updated_field['accountgroup']='ICT'; 
-        }
-        if($account=='Vendita Servizi Hosting')
-        {
-            $updated_field['accountgroup']='Hosting'; 
-        }
-        if($account=='Vendita Sviluppo Software')
-        {
-            $updated_field['accountgroup']='Software'; 
-        }
-        if($account=='Vendita Telefonia')
-        {
-            $updated_field['accountgroup']='Telefonia'; 
-        }
-        
-        
-        
-        var_dump($updated_field);
         $this->update_record('salesorderline',1,$updated_field,"recordid_='$recordid_salesorderline'");
+        
+       
     }
     
     public function update_invoiceline($recordid_invoiceline)
@@ -822,6 +775,25 @@ class Bix_datagateway_controller extends CI_Controller {
                 $fields['date']=$data;
                 $fields['id']= $this->Sys_model->generate_seriale('salesorderplannedinvoice', 'id');
                 $this->insert_record('salesorderplannedinvoice',1, $fields);
+            }
+        }
+    }
+    
+    
+    function temp_connect_servicontract_orderline()
+    {
+        $servicecontracts= $this->Sys_model->db_get("user_servicecontract","*","type!='Monte Ore'");
+        foreach ($servicecontracts as $key => $servicecontract) {
+            $recordid_servicecontract=$servicecontract['recordid_'];
+            $servicecontract_type=$servicecontract['type'];
+            $recordid_company=$servicecontract['recordidcompany_'];
+            $salesorderline=$this->Sys_model->db_get_row("user_salesorderline","*","recordidcompany_='$recordid_company' AND servicecontract_type='$servicecontract_type'");
+            if($salesorderline!=null)
+            {
+               echo "service contract:".$servicecontract['id']." - ".$servicecontract['subject']."    -    sales order line:".$salesorderline['id']."-".$servicecontract['subject']."<br/><br/>"; 
+               $fields['bexio_defaultposition_id']=$salesorderline['id_bexio'];
+               
+               $this->update_record('servicecontract',1,$fields,"recordid_='$recordid_servicecontract'");
             }
         }
     }
