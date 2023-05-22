@@ -197,6 +197,11 @@ class Bix_datagateway_controller extends CI_Controller {
             $recordid=$this->insert_record($tableid,1,$fields);
         }
         
+        if($tableid=='deal')
+        {
+            $this->update_deal($recordid);
+        }
+        
         if($tableid=='salesorder')
         {
             $this->update_salesorder($recordid);
@@ -389,6 +394,32 @@ class Bix_datagateway_controller extends CI_Controller {
         
         var_dump($updated_field);
         $this->update_record('invoiceline',1,$updated_field,"recordid_='$recordid_invoiceline'");
+    }
+    
+    public function update_deal($recordid_deal)
+    {
+        echo "<br/>update_deal:$recordid_deal <br/>";
+        $deal= $this->db_get_row('user_deal','*',"recordid_=$recordid_deal");
+        $updated_field=array();
+        if($deal['fixedprice']=='1')
+        {
+           $updated_field['fixedprice']='Si';
+        }
+        else
+        {
+            $updated_field['fixedprice']='No';
+        }
+        
+        if($deal['leasing']=='1')
+        {
+           $updated_field['leasing']='Si';
+        }
+        else
+        {
+            $updated_field['leasing']='No';
+        }
+        
+        $this->update_record('deal',1,$updated_field,"recordid_='$recordid_deal'");
     }
     
     
