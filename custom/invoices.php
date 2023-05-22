@@ -256,7 +256,8 @@ $invoices=$conn_bixdata->query($sql);
                                             if($invoice_row['type']=='Timesheet')
                                             {
                                             ?>
-                                                <a href="http://bixcrm01:8000/get_record_path/timesheet/<?=$invoice_row['timesheetid']?>" target="blank_"><button data-target="modal1" class="btn modal-trigger" onclick="//$('.modal-content').find('iframe').attr('src','http://bixcrm01:8000/get_record_path/timesheet/<?=$invoice_row['timesheetid']?>/')">Apri</button></a>
+                                                <!--<a href="http://bixcrm01:8000/get_record_path/timesheet/<?=$invoice_row['timesheetid']?>" target="blank_"><button data-target="modal1" class="btn modal-trigger" onclick="//$('.modal-content').find('iframe').attr('src','http://bixcrm01:8000/get_record_path/timesheet/<?=$invoice_row['timesheetid']?>/')">Apri</button></a>-->
+                                                <a href="http://bixcrm01:8000/get_record_path/timesheet/<?=$invoice_row['timesheetid']?>" target="blank_"><button >Apri</button></a>
                                             <?php
                                             }
                                             ?>    
