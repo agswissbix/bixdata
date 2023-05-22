@@ -532,6 +532,7 @@ class Bix_datagateway_controller extends CI_Controller {
         echo $sync_order."<br/>";
         echo "SELECT * FROM $sync_table $condition $order"."<br/><br/>";
         
+        $rows=array();
         if(($sync_service=='JDoc')||($sync_service=='Vte')||($sync_service=='Bixdata'))
         {
             $rows=$this->conn_select($conn,"SELECT * FROM $sync_table $condition $order");
@@ -576,7 +577,7 @@ class Bix_datagateway_controller extends CI_Controller {
         $sys_table_link_rows=$this->db_get('sys_table_link','*',"tablelinkid='$bixdata_table'");
         foreach ($sys_table_link_rows as $key => $sys_table_link_row) {
             $tableid=$sys_table_link_row['tableid'];
-            $this->link_records($tableid,$bixdata_table);
+           // $this->link_records($tableid,$bixdata_table);
         }
          
     }

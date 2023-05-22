@@ -19,6 +19,7 @@ class Rest_controller extends CI_Controller {
         $table=$post['tableid'];
         $searchTerm=$post['searchTerm'];
         $viewid=$post['viewid'];
+        $currentpage=$post['currentpage'];
         $userid=$post['userid'];
         $from="FROM user_$table";
         $where='TRUE';
@@ -105,7 +106,27 @@ class Rest_controller extends CI_Controller {
         }
         
         $sql=$sql." $from WHERE $where  AND user_$table.deleted_<>'Y' ) AS risultati  ";
-        $return['records']=$this->Sys_model->get_records($table,$sql,'recordid_','desc');
+        $limit=50;
+        $offset=$currentpage*$limit-$limit;
+        $return['records']=$this->Sys_model->get_records($table,$sql,$columns[3]['id'],'desc',$offset,$limit);
+        
+        $reports_return=array();
+        $reports= $this->Sys_model->db_get('sys_report',"*","tableid='$table' and layout='table'");
+        foreach ($reports as $key => $report) {
+            $fieldid=$report['fieldid'];
+            if($report['operation']=='somma')
+            {
+                $sql="SELECT SUM($fieldid) as $fieldid  FROM user_$table WHERE $where  AND user_$table.deleted_<>'Y' ";
+            }
+            $result=$this->Sys_model->select($sql);
+            if($result!=null)
+            {
+                $reports_return[$key]['description']=$report['name'];
+                $reports_return[$key]['value']=$result[0][$fieldid];
+            }
+            
+        }
+        $return['reports']=$reports_return;
         echo json_encode($return);
     }
     
