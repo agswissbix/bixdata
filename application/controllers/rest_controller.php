@@ -550,20 +550,20 @@ class Rest_controller extends CI_Controller {
                         if(isnotempty($traveltimedecimal)) 
                         {
                             // Cerca contratto monte ore
-                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza IT' OR services like '%ICT%' ) and (type='Monte Ore')";
+                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza IT' OR services like '%ICT%' ) and (type='Monte Ore') and status='In Progress'";
                             $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition");
                         }
                         else 
                         {
                             // Cerca contratto be all all-inclusive
                             $condition="recordidcompany_='$recordid_company' and  (type='BeAll (All-inclusive)') ";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (status is null or (status<>'Complete' and status<>'Archived'))");
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
                             
                             if($servicecontract==null)
                             {
                                 // Cerca contratto monte ore
                                 $condition="recordidcompany_='$recordid_company' and (service='Assistenza IT' OR services like '%ICT%' ) and (type='Monte Ore')";
-                                $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (status is null or (status<>'Complete' and status<>'Archived'))"); 
+                                $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'"); 
                             }
                             
                         }
@@ -575,12 +575,12 @@ class Rest_controller extends CI_Controller {
                         if($totaltimedecimal==0.25)
                         {
                             $condition="recordidcompany_='$recordid_company' and (type='Manutenzione PBX') ";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (status is null or (status<>'Complete' and status<>'Archived'))");
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
                         }
                         else
                         {
                             $condition="recordidcompany_='$recordid_company' and (service='Assistenza PBX' OR services like '%PBX%' ) and (type='Monte Ore') ";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (status is null or (status<>'Complete' and status<>'Archived'))");
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
                         }
 
                     }
@@ -588,21 +588,21 @@ class Rest_controller extends CI_Controller {
                     if($service=='Assistenza SW')
                     {
                         $condition="recordidcompany_='$recordid_company' and (service='Assistenza SW' OR services like '%Software%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (status is null or (status<>'Complete' and status<>'Archived'))");
+                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
                     }
 
                     //Hosting
                     if($service=='Assistenza Web Hosting')
                     {
                         $condition="recordidcompany_='$recordid_company' and (service='Assistenza Web Hosting' OR services like '%Hosting%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (status is null or (status<>'Complete' and status<>'Archived'))");
+                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
                     }
 
                     //Printing
                     if($service=='Printing')
                     {
                         $condition="recordidcompany_='$recordid_company' and (service='Printing' OR services like '%Printing%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (status is null or (status<>'Complete' and status<>'Archived'))");
+                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
                     }
                     
                     if($servicecontract != null)
