@@ -111,6 +111,7 @@ class Rest_controller extends CI_Controller {
         $return['records']=$this->Sys_model->get_records($table,$sql,$columns[3]['id'],'desc',$offset,$limit);
         
         $reports_return=array();
+        /*
         $reports= $this->Sys_model->db_get('sys_report',"*","tableid='$table' and layout='table'");
         foreach ($reports as $key => $report) {
             $fieldid=$report['fieldid'];
@@ -126,6 +127,8 @@ class Rest_controller extends CI_Controller {
             }
             
         }
+         * */
+         
         $return['reports']=$reports_return;
         echo json_encode($return);
     }

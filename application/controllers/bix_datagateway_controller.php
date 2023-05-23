@@ -577,7 +577,7 @@ class Bix_datagateway_controller extends CI_Controller {
         $sys_table_link_rows=$this->db_get('sys_table_link','*',"tablelinkid='$bixdata_table'");
         foreach ($sys_table_link_rows as $key => $sys_table_link_row) {
             $tableid=$sys_table_link_row['tableid'];
-           // $this->link_records($tableid,$bixdata_table);
+            $this->link_records($tableid,$bixdata_table);
         }
          
     }
@@ -597,6 +597,8 @@ class Bix_datagateway_controller extends CI_Controller {
     
     public function link_records($master_tableid='',$link_tableid='')
     {
+        $now = date('Y-m-d H:i:s');
+        echo "<br/> link_records $master_tableid - $link_tableid start: $now <br/>";
         $master_field=$this->db_get_value('sys_field', 'master_field', "tableid='$link_tableid' AND tablelink='$master_tableid'");
         $linked_field=$this->db_get_value('sys_field', 'linked_field', "tableid='$link_tableid' AND tablelink='$master_tableid'");
         if(($master_field!='')&&($linked_field!=''))
@@ -610,6 +612,8 @@ class Bix_datagateway_controller extends CI_Controller {
             echo $sql;
             $this->execute_query($sql);
         }
+        $now = date('Y-m-d H:i:s');
+        echo "<br/> link_records $master_tableid - $link_tableid stop: $now <br/>";
     }
     
     
