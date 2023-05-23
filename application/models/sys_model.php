@@ -630,10 +630,14 @@ class Sys_model extends CI_Model {
             SELECT *
             FROM 
                 sys_table
-                JOIN
+                LEFT JOIN
                 sys_table_feature
                 ON
                 sys_table.id=sys_table_feature.tableid
+                LEFT JOIN
+                sys_table_workspace
+                ON
+                sys_table.workspace=sys_table_workspace.name
             WHERE featureid=16 AND enabled='N'
             ORDER BY workspaceorder,tableorder,description
             ";
