@@ -448,10 +448,11 @@ class Rest_controller extends CI_Controller {
             
             
             $invoicestatus=$row['invoicestatus'];
-            if(($invoicestatus!='Invoiced')&&($invoicestatus!='Service Contract')&&($invoicestatus!='Flat Service Contract'))
+            if($invoicestatus!='Invoiced')
             {
                 $invoicestatus='To Process';
             }
+            $fields['recordidservicecontract_']='';
                 
             
             
@@ -466,49 +467,42 @@ class Rest_controller extends CI_Controller {
 
 
             
-
+            
             
                 
             if($service=='Amministrazione')
             {
                 $invoicestatus='Amministrazione';
-                $fields['recordidservicecontract_']='';
             }
             
             if($service=='Commerciale')
             {
                 $invoicestatus='Commerciale';
-                $fields['recordidservicecontract_']='';
             }
 
             if($service=='Riunione')
             {
                 $invoicestatus='Riunione';
-                $fields['recordidservicecontract_']='';
             }
 
             if($service=='Interno')
             {
                 $invoicestatus='Interno';
-                $fields['recordidservicecontract_']='';
             }
 
             if($service=='Formazione e Test')
             {
                 $invoicestatus='Formazione e Test';
-                $fields['recordidservicecontract_']='';
             }
 
             if($service=='Formazione Apprendista')
             {
                 $invoicestatus='Formazione Apprendista';
-                $fields['recordidservicecontract_']='';
             }
 
             if($invoiceoption=='To check')
             {
                 $invoicestatus='To check';
-                $fields['recordidservicecontract_']='';
             }
 
             if($invoiceoption=='Swisscom incident')
@@ -516,37 +510,32 @@ class Rest_controller extends CI_Controller {
                 $invoicestatus='Swisscom incident';
                 $workprice=0;
                 $travelprice=0;
-                $fields['recordidservicecontract_']='';
             }
 
             if($invoiceoption=='Mauro incident')
             {
                 $invoicestatus='Mauro incident';
-                $fields['recordidservicecontract_']='';
             }
 
             if($invoiceoption=='Under Warranty')
             {
                 $invoicestatus='Under warranty';
-                $fields['recordidservicecontract_']='';
             }
 
             if($invoiceoption=='Out of contract')
             {
                 $invoicestatus='Out of contract';
-                $fields['recordidservicecontract_']='';
             }
 
             if($invoiceoption=='Commercial support')
             {
                 $invoicestatus='Commercial support';
-                $fields['recordidservicecontract_']='';
             }
 
             if($invoiceoption=='Swisscom ServiceNow')
             {
                 $invoicestatus='Swisscom ServiceNow';
-                $fields['recordidservicecontract_']='';
+                
             }
                 
                 
@@ -566,8 +555,7 @@ class Rest_controller extends CI_Controller {
             if(($invoicestatus=='To Process'))
             {
                 $servicecontract=null;
-                if(isEmpty($recordid_servicecontract))
-                {
+                
                     
                     if($service=='Assistenza IT')
                     {
@@ -643,7 +631,7 @@ class Rest_controller extends CI_Controller {
 
                     }
 
-                }
+                
                
 
                 
