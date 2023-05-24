@@ -235,7 +235,7 @@ function db_convert_string($value)
 
 function isnotempty($value)
     {
-        if(($value!='')&&($value!='00:00:00')&&($value!=null)&&($value!='undefined')&&($value!='None'))
+        if(($value!='')&&($value!='00:00:00')&&($value!='0.00')&&($value!=null)&&($value!='undefined')&&($value!='None'))
         {
             return true;
         }
