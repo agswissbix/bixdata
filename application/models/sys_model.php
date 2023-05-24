@@ -2844,18 +2844,21 @@ class Sys_model extends CI_Model {
         $column['id']='recordid_';
         $column['desc']='recordid_';
         $column['fieldtypeid']='Sys';
+        $column['fieldtypewebid']='Sys';
         $column['results_fieldtypeid']='Sys';
         $column['linkedtableid']='';
         $colums[]=$column;
         $column['id']='recordstatus_';
         $column['desc']='recordstatus_';
         $column['fieldtypeid']='Sys';
+        $column['fieldtypewebid']='Sys';
         $column['results_fieldtypeid']='Sys';
         $column['linkedtableid']='';
         $colums[]=$column;
         $column['id']='recordcss_';
         $column['desc']='recordcss_';
         $column['fieldtypeid']='Sys';
+        $column['fieldtypewebid']='Sys';
         $column['results_fieldtypeid']='Sys';
         $column['linkedtableid']='';
         $colums[]=$column;
@@ -2864,6 +2867,7 @@ class Sys_model extends CI_Model {
             {
                 $column['id']="recordid".strtolower($preference_column['tablelink'])."_";
                 $column['fieldtypeid']='linked';
+                 $column['fieldtypewebid']='linked';
                 $column['results_fieldtypeid']='linked';
                 $linkedtableid=$preference_column['tablelink'];
                 $column['linkedtableid']=$linkedtableid;
@@ -2873,6 +2877,7 @@ class Sys_model extends CI_Model {
             {
                 $column['id']=$preference_column['fieldid'];
                 $column['fieldtypeid']=$preference_column['fieldtypeid'];
+                $column['fieldtypewebid']=$preference_column['fieldtypewebid'];
                 if(isnotempty($preference_column['lookuptableid']))
                 {
                     $column['results_fieldtypeid']='Lookup';
