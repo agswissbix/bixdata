@@ -746,7 +746,7 @@ class Rest_controller extends CI_Controller {
             $timesheets= $this->Sys_model->db_get("user_timesheet","*","recordidservicecontract_='$recordid'");
             foreach ($timesheets as $key => $timesheet) {
                 $usedhours=$usedhours+$timesheet['worktime_decimal'];
-                if($excludetravel!='1')
+                if(($excludetravel!='1')&&($excludetravel!='Si'))
                 {
                     $usedhours=$usedhours+$timesheet['traveltime_decimal'];
                 }
