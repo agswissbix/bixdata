@@ -756,6 +756,15 @@ class Rest_controller extends CI_Controller {
             $fields['progress']=($fields['usedhours']/($contracthours+$previousresidual))*100;
         }
         
+        //------TASK--------------------------------------------------------------------------------------
+        if($tableid=='task')
+        {
+           if($row['completed']=='Si')
+           {
+              $fields['status']='Closed'; 
+           }
+        }
+        
         
         $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
         
