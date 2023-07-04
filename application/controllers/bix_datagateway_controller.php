@@ -178,23 +178,38 @@ class Bix_datagateway_controller extends CI_Controller {
     
     function sync_record($tableid,$fields,$sync_field,$sync_field_bixdata)
     {
+        $sync_type= $this->db_get_value('sys_table', 'sync_type', "id='$tableid'");
         $origin_key_value=$fields[$sync_field_bixdata];
         $bixdata_row= $this->db_get_row('user_'.$tableid,'*',"$sync_field_bixdata='$origin_key_value'");
         if($bixdata_row!=null)
         {
-            echo '<span style="color:green">UPDATE RECORD</span> <br/>';
-            $recordid=$bixdata_row['recordid_'];
-            $this->update_record($tableid,1,$fields,"recordid_='$recordid'");
+            if($sync_type=='insert_only')
+            {
+                echo '<span style="color:red">UPDATE RECORD --> NO - INSERT ONLY</span> <br/>';
+            }
+            else
+            {
+                echo '<span style="color:green">UPDATE RECORD</span> <br/>';
+                $recordid=$bixdata_row['recordid_'];
+                //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
+            }
         }
         else
         {
-            echo '<span style="color:red">INSERT RECORD</span> <br/>';
-            if($tableid!='dipendenti')
+            if($sync_type=='update_only')
             {
-                $fields['id']= $this->Sys_model->generate_id($tableid);
+                echo '<span style="color:red">INSERT RECORD --> NO - UPDATE ONLY</span> <br/>';
             }
-                
-            $recordid=$this->insert_record($tableid,1,$fields);
+            else
+            {
+                echo '<span style="color:red">INSERT RECORD</span> <br/>';
+                if($tableid!='dipendenti')
+                {
+                    $fields['id']= $this->Sys_model->generate_id($tableid);
+                }
+
+                //$recordid=$this->insert_record($tableid,1,$fields);
+            }
         }
         
         if($tableid=='deal')
