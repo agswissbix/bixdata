@@ -181,6 +181,7 @@ class Bix_datagateway_controller extends CI_Controller {
         $sync_type= $this->db_get_value('sys_table', 'sync_type', "id='$tableid'");
         $origin_key_value=$fields[$sync_field_bixdata];
         $bixdata_row= $this->db_get_row('user_'.$tableid,'*',"$sync_field_bixdata='$origin_key_value'");
+        echo $sync_type."<br/>";
         if($bixdata_row!=null)
         {
             if($sync_type=='insert_only')
