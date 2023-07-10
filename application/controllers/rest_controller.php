@@ -54,18 +54,31 @@ class Rest_controller extends CI_Controller {
                         $column_id="user_$linkedtableid".".$keyfieldlink";
                         $from=$from." LEFT JOIN user_$linkedtableid ON user_$table.recordid$linkedtableid"."_=user_$linkedtableid.recordid_ ";
                     }
+                    elseif($column['fieldtypeid']=='Utente')
+                    {
+                        $from=$from." LEFT JOIN sys_user as sys_user_$column_id ON sys_user_$column_id.id=user_$table.$column_id ";
+                    }
                     else
                     {
                         $column_id="user_$table.$column_id";
                     }
                     if($where=='TRUE')
                     {
-                        $where=$where." AND ($column_id like '%$searchTerm%'";
+                        $where=$where." AND (";
                     }
                     else
                     {
-                        $where=$where." OR $column_id like '%$searchTerm%'";
+                        $where=$where." OR ";
                     } 
+                    if($column['fieldtypeid']=='Utente')
+                    {
+                        $where=$where." sys_user_$column_id.firstname like '%$searchTerm%' OR sys_user_$column_id.lastname like '%$searchTerm%' ";
+                    }
+                    else
+                    {
+                        $where=$where."$column_id like '%$searchTerm%'";
+                    }
+                    
                 }   
                 
                 
@@ -371,6 +384,7 @@ class Rest_controller extends CI_Controller {
         }
         
         $this->custom_update($tableid, $recordid);
+        $this->custom_update($tableid, $recordid);
         
     }
     
@@ -556,44 +570,27 @@ class Rest_controller extends CI_Controller {
             {
                 $servicecontract=null;
                 
-                    
+                    // cerca service contract
                     if($service=='Assistenza IT')
                     {
-                        if(isnotempty($traveltimedecimal)) 
-                        {
-                            // Cerca contratto monte ore
-                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza IT' OR services like '%ICT%' ) and (type='Monte Ore') and status='In Progress'";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition");
-                        }
-                        else 
+                        if(isempty($traveltimedecimal)) 
                         {
                             // Cerca contratto be all all-inclusive
                             $condition="recordidcompany_='$recordid_company' and  (type='BeAll (All-inclusive)') ";
                             $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
-                            
-                            if($servicecontract==null)
-                            {
-                                // Cerca contratto monte ore
-                                $condition="recordidcompany_='$recordid_company' and (service='Assistenza IT' OR services like '%ICT%' ) and (type='Monte Ore')";
-                                $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'"); 
-                            }
-                            
                         }
-                        
+         
                     }
 
                     if($service=='Assistenza PBX')
                     {
-                        if($totaltimedecimal==0.25)
+                        if(isempty($traveltimedecimal)&&($totaltimedecimal==0.25))
                         {
+                            //cerca contratto pbx
                             $condition="recordidcompany_='$recordid_company' and (type='Manutenzione PBX') ";
                             $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
                         }
-                        else
-                        {
-                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza PBX' OR services like '%PBX%' ) and (type='Monte Ore') ";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
-                        }
+ 
 
                     }
 
@@ -617,6 +614,23 @@ class Rest_controller extends CI_Controller {
                         $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
                     }
                     
+                    
+                    
+                    if($servicecontract==null)
+                    {
+                        // Cerca contratto monte ore
+                        if($service=='Assistenza IT')
+                        {
+                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza IT' OR services like '%ICT%' )  ";
+                        }
+                        if($service=='Assistenza PBX')
+                        {
+                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza PBX' OR services like '%PBX%' )  ";
+                        }
+                        
+                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (type='Monte Ore') and status='In Progress'");
+                    }
+                    
                     if($servicecontract != null)
                     {
                         $invoicestatus='Service Contract';
@@ -628,6 +642,8 @@ class Rest_controller extends CI_Controller {
                         {
                             $invoicestatus='Flat Service Contract';
                         }
+                        
+                        $this->custom_update('servicecontract', $recordid_servicecontract);
 
                     }
 
@@ -761,9 +777,35 @@ class Rest_controller extends CI_Controller {
         {
            if($row['completed']=='Si')
            {
-              $fields['status']='Closed'; 
+              $fields['status']='Chiuso'; 
            }
+           else
+           {
+                $fields['status']='Aperto';
+                if(isnotempty($row['planneddate']))
+                {
+                    $fields['status']='Pianificato';
+                }
+               
+                $today = new DateTime(); 
+                $today->setTime(0, 0);
+                $duedate = new DateTime($row['duedate']); 
+
+
+                if ($duedate >= $today) {
+                    $diff = $duedate->diff($today); // Calculate the difference between the two dates
+                    if ($diff->days < 2) {
+                        $fields['status']='In Scadenza';
+                    }
+                } else {
+                    $fields['status']='Scaduto';
+                }
+           }
+           
         }
+        
+        
+        
         
         
         $this->Sys_model->update_record($tableid,1,$fields,"recordid_='$recordid'");
