@@ -570,8 +570,15 @@ class Bix_datagateway_controller extends CI_Controller {
             foreach ($row as $key => $field) {
                 if(array_key_exists($key, $bixdata_fields))
                 {
-                    $sync_fields[$bixdata_fields[$key]]=conv_text_utf8($field); 
-                    //$sync_fields[$bixdata_fields[$key]]=$field; 
+                    if($sync_service=='Progel')
+                    {
+                        $sync_fields[$bixdata_fields[$key]]=conv_text_utf8($field); 
+                    }
+                    else
+                    {
+                       $sync_fields[$bixdata_fields[$key]]=$field;  
+                    }
+                    
                 }
             }   
             echo "SYNC FIELDS <br/>";

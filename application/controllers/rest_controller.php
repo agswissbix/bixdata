@@ -577,7 +577,7 @@ class Rest_controller extends CI_Controller {
                         {
                             // Cerca contratto be all all-inclusive
                             $condition="recordidcompany_='$recordid_company' and  (type='BeAll (All-inclusive)') ";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'  AND deleted_='N'");
                         }
          
                     }
@@ -588,7 +588,7 @@ class Rest_controller extends CI_Controller {
                         {
                             //cerca contratto pbx
                             $condition="recordidcompany_='$recordid_company' and (type='Manutenzione PBX') ";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
                         }
  
 
@@ -597,21 +597,21 @@ class Rest_controller extends CI_Controller {
                     if($service=='Assistenza SW')
                     {
                         $condition="recordidcompany_='$recordid_company' and (service='Assistenza SW' OR services like '%Software%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
+                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
                     }
 
                     //Hosting
                     if($service=='Assistenza Web Hosting')
                     {
                         $condition="recordidcompany_='$recordid_company' and (service='Assistenza Web Hosting' OR services like '%Hosting%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
+                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
                     }
 
                     //Printing
                     if($service=='Printing')
                     {
                         $condition="recordidcompany_='$recordid_company' and (service='Printing' OR services like '%Printing%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'");
+                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
                     }
                     
                     
@@ -628,7 +628,7 @@ class Rest_controller extends CI_Controller {
                             $condition="recordidcompany_='$recordid_company' and (service='Assistenza PBX' OR services like '%PBX%' )  ";
                         }
                         
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (type='Monte Ore') and status='In Progress'");
+                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (type='Monte Ore') and status='In Progress' AND deleted_='N'");
                     }
                     
                     if($servicecontract != null)
@@ -759,7 +759,7 @@ class Rest_controller extends CI_Controller {
             $progress=0;
             $fields['usedhours']=$usedhours;
             
-            $timesheets= $this->Sys_model->db_get("user_timesheet","*","recordidservicecontract_='$recordid'");
+            $timesheets= $this->Sys_model->db_get("user_timesheet","*","recordidservicecontract_='$recordid' AND deleted_='N'");
             foreach ($timesheets as $key => $timesheet) {
                 $usedhours=$usedhours+$timesheet['worktime_decimal'];
                 if(($excludetravel!='1')&&($excludetravel!='Si'))
@@ -778,6 +778,8 @@ class Rest_controller extends CI_Controller {
            if($row['completed']=='Si')
            {
               $fields['status']='Chiuso'; 
+              $today=  date('Y-m-d');
+              $fields['closedate']=$today;
            }
            else
            {
@@ -790,8 +792,8 @@ class Rest_controller extends CI_Controller {
                 $today = new DateTime(); 
                 $today->setTime(0, 0);
                 $duedate = new DateTime($row['duedate']); 
-
-
+ 
+                  
                 if ($duedate >= $today) {
                     $diff = $duedate->diff($today); // Calculate the difference between the two dates
                     if ($diff->days < 2) {

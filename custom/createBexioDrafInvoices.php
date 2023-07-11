@@ -127,7 +127,7 @@ $conn_bixdata->query($sql);
 $sql = "
 select *
 from user_timesheet
-where invoicestatus='To Invoice' 
+where invoicestatus='To Invoice' and deleted_='N'
 order by date asc
 ";
 $timesheets=select($conn_bixdata,$sql);
