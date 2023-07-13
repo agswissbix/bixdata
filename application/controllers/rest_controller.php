@@ -719,7 +719,19 @@ class Rest_controller extends CI_Controller {
             $fields['travelprice']=$travelprice;
             $fields['totaltime_decimal']=$totaltimedecimal;
             $fields['totalprice']=$totalprice;
-
+            
+            if(($service=='Assistenza IT')||($service=='Assistenza PBX')||($service=='Assistenza SW')||($service=='Assistenza Web Hosting')||($service=='Printing'))
+            {
+                if($row['validated']!='Si')
+                {
+                    $fields['validated']='No';
+                }
+                
+            }
+            else
+            {
+                $fields['validated']='';
+            }
             
             
         }
@@ -945,12 +957,7 @@ class Rest_controller extends CI_Controller {
                 }
                 $deal_line['uniteffectivecost']=$uniteffectivecost;
                 $deal_line['effectivecost']=$cost_actual;
-                $deal_line['margin_actual']=$price-$cost_actual;
-                if($recordid_dealline=='00000000000000000000000000001907')
-                {
-                    var_dump($deal_line);
-                }
-                
+                $deal_line['margin_actual']=$price-$cost_actual;               
                 $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid_dealline'");
                 echo "UPDATED $recordid_dealline <br/>";
             }
