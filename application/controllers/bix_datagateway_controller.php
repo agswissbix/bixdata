@@ -294,6 +294,8 @@ class Bix_datagateway_controller extends CI_Controller {
         $multiplier=$salesorder['multiplier'];
         
         $updated_field['repetitiontype']=$repetition_type;
+        $updated_field['bexio_repetition_type']=$salesorder['bexio_repetition_type'];
+        $updated_field['bexio_repetition_interval']=$salesorder['bexio_repetition_interval'];
         $updated_field['total_net_yearly']=$salesorderline['price']*$multiplier;
         $updated_field['recordidcompany_']=$salesorder['recordidcompany_'];
         $updated_field['bexio_orderno']=$salesorder['documentnr'];

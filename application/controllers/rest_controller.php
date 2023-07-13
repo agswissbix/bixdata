@@ -891,8 +891,7 @@ class Rest_controller extends CI_Controller {
                     
                     $fields['dealstage']=$updated_status;
                     $recordid_project=$this->Sys_model->db_get_value("user_project","recordid_","recordiddeal_='$recordid_deal'");
-                    echo $recordid_project."<br/>";
-                    echo "<b>".$updated_status."</b><br/><br/>";
+                    echo "<b>".$updated_status."</b><br/>";
                     
                     
                 }
@@ -901,6 +900,7 @@ class Rest_controller extends CI_Controller {
             
                     
             // aggiornamento dealline
+            echo "Righe dettaglio:<br/>";
             $deal_lines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid_deal'");
             $deal_price=0;
             $deal_cost_expectd=0;
@@ -909,7 +909,8 @@ class Rest_controller extends CI_Controller {
             $deal_margin_actual=0;
             foreach ($deal_lines as $key => $deal_line) {
                 $recordid_dealline=$deal_line['recordid_'];
-                
+                $dealline_name=$deal_line['name'];
+                echo "$dealline_name <br/>";
                 $uniteffectivecost=0;
                 $stmt = sqlsrv_query($conn, "SELECT * FROM VA1029 WHERE F1062='$recordid_dealline' AND FENA=-1");
                 while($row = sqlsrv_fetch_array($stmt)) {
@@ -918,6 +919,7 @@ class Rest_controller extends CI_Controller {
                         $uniteffectivecost=$row['F1043'];
                     }
                 }
+                echo "Costo unitario effettivo: $uniteffectivecost<br/>";
                 $price=$deal_line['price'];
                 $quantity=$deal_line['quantity'];
                 $unitexpectedcost=$deal_line['unitexpectedcost'];
@@ -941,14 +943,18 @@ class Rest_controller extends CI_Controller {
                 {
                     $cost_actual=$uniteffectivecost*$quantity_actual;
                 }
+                $deal_line['uniteffectivecost']=$uniteffectivecost;
                 $deal_line['effectivecost']=$cost_actual;
                 $deal_line['margin_actual']=$price-$cost_actual;
-
-
+                if($recordid_dealline=='00000000000000000000000000001907')
+                {
+                    var_dump($deal_line);
+                }
+                
                 $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid_dealline'");
-                echo "UPDATED $recordid_deal <br/>";
+                echo "UPDATED $recordid_dealline <br/>";
             }
-        
+            echo "<br/><br/>";
         }
         
         
