@@ -256,6 +256,10 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             $updated_fields['repetitiontype']='Annuale';
         }
+        if($repetitiontype=='Half-Yearly')
+        {
+            $updated_fields['repetitiontype']='Semestrale';
+        }
         if($repetitiontype=='Quarterly')
         {
             $updated_fields['repetitiontype']='Trimestrale';
