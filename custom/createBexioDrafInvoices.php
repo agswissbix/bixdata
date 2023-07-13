@@ -163,7 +163,7 @@ $sql = "
     
 select uc.recordid_,uc.companyname
 from user_timesheet as ut JOIN user_company uc on ut.recordidcompany_=uc.recordid_
-where invoicestatus='To Invoice'
+where invoicestatus='To Invoice' and ut.deleted_='N'
 GROUP BY uc.recordid_,uc.companyname
 ORDER BY uc.companyname
 

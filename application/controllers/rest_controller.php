@@ -908,13 +908,21 @@ class Rest_controller extends CI_Controller {
             $deal_margin_expected=0;
             $deal_margin_actual=0;
             foreach ($deal_lines as $key => $deal_line) {
-                $recordid=$deal_line['recordid_'];
+                $recordid_dealline=$deal_line['recordid_'];
+                
+                $uniteffectivecost=0;
+                $stmt = sqlsrv_query($conn, "SELECT * FROM VA1029 WHERE F1062='$recordid_dealline' AND FENA=-1");
+                while($row = sqlsrv_fetch_array($stmt)) {
+                    if($row!=null)
+                    {
+                        $uniteffectivecost=$row['F1043'];
+                    }
+                }
                 $price=$deal_line['price'];
                 $quantity=$deal_line['quantity'];
                 $unitexpectedcost=$deal_line['unitexpectedcost'];
                 $expectedcost=$deal_line['expectedcost'];
                 $expectedmargin=$deal_line['expectedmargin'];
-                $uniteffectivecost=$deal_line['uniteffectivecost'];
                 $effectivecost=$deal_line['effectivecost'];
                 $quantity_actual=$deal_line['quantity_actual'];
                 $quantity_difference=$deal_line['quantity_difference'];
@@ -937,7 +945,7 @@ class Rest_controller extends CI_Controller {
                 $deal_line['margin_actual']=$price-$cost_actual;
 
 
-                $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid'");
+                $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid_dealline'");
                 echo "UPDATED $recordid_deal <br/>";
             }
         
