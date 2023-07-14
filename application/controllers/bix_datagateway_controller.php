@@ -192,7 +192,7 @@ class Bix_datagateway_controller extends CI_Controller {
             {
                 echo '<span style="color:green">UPDATE RECORD</span> <br/>';
                 $recordid=$bixdata_row['recordid_'];
-                $this->update_record($tableid,1,$fields,"recordid_='$recordid'");
+                //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
             }
         }
         else
@@ -209,7 +209,7 @@ class Bix_datagateway_controller extends CI_Controller {
                     $fields['id']= $this->Sys_model->generate_id($tableid);
                 }
 
-                $recordid=$this->insert_record($tableid,1,$fields);
+                //$recordid=$this->insert_record($tableid,1,$fields);
             }
         }
         
@@ -531,6 +531,7 @@ class Bix_datagateway_controller extends CI_Controller {
         }
         $bixdata_fields=array();
         $rows=$this->db_get('sys_field','*',"tableid='$bixdata_table'");
+       
         foreach ($rows as $key => $row) {
             $bixdata_fields[$row['sync_fieldid']]=$row['fieldid'];
         }
@@ -571,6 +572,7 @@ class Bix_datagateway_controller extends CI_Controller {
             }
         }
         $counter=0;
+        echo "Righe da sincronizzare:".count($rows)."<br/>";
         foreach ($rows as $key => $row) {
             $sync_fields=array();
             foreach ($row as $key => $field) {
