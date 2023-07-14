@@ -192,7 +192,7 @@ class Bix_datagateway_controller extends CI_Controller {
             {
                 echo '<span style="color:green">UPDATE RECORD</span> <br/>';
                 $recordid=$bixdata_row['recordid_'];
-                //$this->update_record($tableid,1,$fields,"recordid_='$recordid'");
+                //$this->update_record($tableid,1,$fields,"recordid_='$recordid'"); 
             }
         }
         else
