@@ -121,6 +121,11 @@ class Rest_controller extends CI_Controller {
         $sql=$sql." $from WHERE $where  AND user_$table.deleted_<>'Y' ) AS risultati  ";
         $limit=50;
         $offset=$currentpage*$limit-$limit;
+        if(isempty($currentpage))
+        {
+            $offset=0;
+            $limit=1000000000000000000;
+        }
         $return['records']=$this->Sys_model->get_records($table,$sql,$columns[3]['id'],'desc',$offset,$limit);
         
         $reports_return=array();
