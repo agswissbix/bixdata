@@ -491,6 +491,7 @@ class Bix_datagateway_controller extends CI_Controller {
     
     public function syncdata($bixdata_table='')
     {
+        ini_set('max_execution_time', 9000);
         header("Access-Control-Allow-Methods: POST, GET");
         header("Access-Control-Allow-Origin: *");
         $now = date('Y-m-d H:i:s');
