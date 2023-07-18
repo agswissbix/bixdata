@@ -178,9 +178,10 @@ class Bix_datagateway_controller extends CI_Controller {
     
     function sync_record($tableid,$fields,$sync_field,$sync_field_bixdata)
     {
-        echo "Log: inizio sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s');
+        
         $sync_type= $this->db_get_value('sys_table', 'sync_type', "id='$tableid'");
         $origin_key_value=$fields[$sync_field_bixdata];
+        echo "Log: inizio sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s');
         $bixdata_row= $this->db_get_row('user_'.$tableid,'*',"$sync_field_bixdata='$origin_key_value'");
         echo $sync_type."<br/>";
         if($bixdata_row!=null)
