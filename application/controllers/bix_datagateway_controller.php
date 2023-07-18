@@ -178,6 +178,7 @@ class Bix_datagateway_controller extends CI_Controller {
     
     function sync_record($tableid,$fields,$sync_field,$sync_field_bixdata)
     {
+        echo "Log: inizio sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s');
         $sync_type= $this->db_get_value('sys_table', 'sync_type', "id='$tableid'");
         $origin_key_value=$fields[$sync_field_bixdata];
         $bixdata_row= $this->db_get_row('user_'.$tableid,'*',"$sync_field_bixdata='$origin_key_value'");
@@ -231,7 +232,7 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             //$this->update_invoiceline($recordid);
         }
-        
+        echo "Log: fine sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s');
     }
     
     public function update_salesorder($recordid_salesorder)
@@ -440,7 +441,7 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             $updated_field['leasing']='No';
         }
-        
+        $updated_field['syncstatus']='Si';
         $this->update_record('deal',1,$updated_field,"recordid_='$recordid_deal'");
     }
     
@@ -557,7 +558,7 @@ class Bix_datagateway_controller extends CI_Controller {
         echo $sync_condition."<br/>";
         echo $sync_order."<br/>";
         echo "SELECT * FROM $sync_table $condition $order"."<br/><br/>";
-        
+        echo "Log: inizio select su sql: ".date('Y-m-d H:i:s');
         $rows=array();
         if(($sync_service=='JDoc')||($sync_service=='Vte')||($sync_service=='Bixdata'))
         {
@@ -572,6 +573,7 @@ class Bix_datagateway_controller extends CI_Controller {
             }
         }
         $counter=0;
+        echo "Log: fine select su sql: ".date('Y-m-d H:i:s');
         echo "Righe da sincronizzare:".count($rows)."<br/>";
         foreach ($rows as $key => $row) {
             $sync_fields=array();
