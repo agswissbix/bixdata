@@ -621,6 +621,102 @@ class Bix_datagateway_controller extends CI_Controller {
         echo "<br/><br/><b> syncdata $bixdata_table stop: $now </b><br/>";
     }
     
+    
+    public function custom_sync_rapportidilavoro($id_dipendente)
+    {
+        header("Access-Control-Allow-Methods: POST, GET");
+        header("Access-Control-Allow-Origin: *");
+        $now = date('Y-m-d H:i:s');
+        echo "<br/><br/> <b>custom_sync_rapportidilavoro  start: $now </b><br/>";
+        $bixdata_table='rapportidilavoro';
+        $sync_service= 'Progel';
+        $sync_table= $this->db_get_value('sys_table', 'sync_table', "id='$bixdata_table'");
+        $sync_field= $this->db_get_value('sys_table', 'sync_field', "id='$bixdata_table'");
+        $sync_condition= $this->db_get_value('sys_table', 'sync_condition', "id='$bixdata_table'");
+        $sync_condition=$sync_condition.' AND "NUMERO TS"='.$id_dipendente;
+        $sync_order= $this->db_get_value('sys_table', 'sync_order', "id='$bixdata_table'");
+
+    
+        $serverName = "SRVJDOC01";
+        $connectionInfo = array( "Database"=>"3pclc_data", "UID"=>"sa", "PWD"=>"3pclc,.-22");
+        $conn = sqlsrv_connect( $serverName, $connectionInfo);
+        
+        $bixdata_fields=array();
+        $rows=$this->db_get('sys_field','*',"tableid='$bixdata_table'");
+       
+        foreach ($rows as $key => $row) {
+            $bixdata_fields[$row['sync_fieldid']]=$row['fieldid'];
+        }
+        if($this->isempty($sync_condition))
+        {
+            $condition="";
+        }
+        else
+        {
+            $condition="WHERE $sync_condition";
+        }
+        
+        if($this->isempty($sync_order))
+        {
+            $order="";
+        }
+        else
+        {
+            $order="ORDER BY $sync_order";
+        }
+        echo $sync_table."<br/>";
+        echo $sync_field."<br/>";
+        echo $sync_condition."<br/>";
+        echo $sync_order."<br/>";
+        echo "SELECT * FROM $sync_table $condition $order"."<br/><br/>";
+        echo "<b>Log: inizio select su sql: ".date('Y-m-d H:i:s')."</b><br/>";
+        $rows=array();
+        $stmt = sqlsrv_query($conn, "SELECT * FROM $sync_table $condition $order");
+        while($row = sqlsrv_fetch_array($stmt)) {
+            $rows[]=$row;
+        }
+        $counter=0;
+        echo "<b>Log: fine select su sql: ".date('Y-m-d H:i:s')."</b><br/>";
+        echo "Righe da sincronizzare:".count($rows)."<br/>";
+        foreach ($rows as $key => $row) {
+            $sync_fields=array();
+            foreach ($row as $key => $field) {
+                if(array_key_exists($key, $bixdata_fields))
+                {
+                    if($sync_service=='Progel')
+                    {
+                        $sync_fields[$bixdata_fields[$key]]=conv_text_utf8($field); 
+                    }
+                    else
+                    {
+                       $sync_fields[$bixdata_fields[$key]]=$field;  
+                    }
+                    
+                }
+            }   
+            echo "SYNC FIELDS <br/>";
+            var_dump($sync_fields);
+            echo "<br/>";
+            echo "SYNC FIELD <br/>";
+            echo $sync_field."<br/>";
+            $sync_field_bixdata=$bixdata_fields[$sync_field];
+            echo "SYNC FIELD BIXDATA <br/>";
+            echo $sync_field_bixdata."<br/>";
+           
+            $this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
+            $counter++;
+            echo "Counter $counter";
+            echo "<br/><br/><br/><br/>";
+            
+            
+            
+        }
+        
+        
+        $now = date('Y-m-d H:i:s');
+        echo "<br/><br/><b> syncdata $bixdata_table stop: $now </b><br/>";
+    }
+    
     public function apidata($bixdata_table='')
     {
         if($bixdata_table=='feedback')
