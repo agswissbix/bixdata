@@ -127,7 +127,7 @@ $conn_bixdata->query($sql);
 $sql = "
 select *
 from user_timesheet
-where invoicestatus='To Invoice' and deleted_='N'
+where invoicestatus='To Invoice' and deleted_='N' and validated='Si'
 order by date asc
 ";
 $timesheets=select($conn_bixdata,$sql);
@@ -163,7 +163,7 @@ $sql = "
     
 select uc.recordid_,uc.companyname
 from user_timesheet as ut JOIN user_company uc on ut.recordidcompany_=uc.recordid_
-where invoicestatus='To Invoice' and ut.deleted_='N'
+where invoicestatus='To Invoice' and ut.deleted_='N' and ut.validated='Si'
 GROUP BY uc.recordid_,uc.companyname
 ORDER BY uc.companyname
 
