@@ -486,6 +486,38 @@ class Rest_controller extends CI_Controller {
 
 
             
+            if($invoiceoption=='To check')
+            {
+                $invoicestatus='To check';
+            }
+
+            if($invoiceoption=='Swisscom incident')
+            {
+                $invoicestatus='Swisscom incident';
+                $workprice=0;
+                $travelprice=0;
+            }
+
+            if($invoiceoption=='Mauro incident')
+            {
+                $invoicestatus='Mauro incident';
+            }
+
+            if($invoiceoption=='Under Warranty')
+            {
+                $invoicestatus='Under warranty';
+            }
+
+            if($invoiceoption=='Commercial support')
+            {
+                $invoicestatus='Commercial support';
+            }
+
+            if($invoiceoption=='Swisscom ServiceNow')
+            {
+                $invoicestatus='Swisscom ServiceNow';
+                
+            }
             
             
                 
@@ -519,43 +551,7 @@ class Rest_controller extends CI_Controller {
                 $invoicestatus='Formazione Apprendista';
             }
 
-            if($invoiceoption=='To check')
-            {
-                $invoicestatus='To check';
-            }
-
-            if($invoiceoption=='Swisscom incident')
-            {
-                $invoicestatus='Swisscom incident';
-                $workprice=0;
-                $travelprice=0;
-            }
-
-            if($invoiceoption=='Mauro incident')
-            {
-                $invoicestatus='Mauro incident';
-            }
-
-            if($invoiceoption=='Under Warranty')
-            {
-                $invoicestatus='Under warranty';
-            }
-
-            if($invoiceoption=='Out of contract')
-            {
-                $invoicestatus='Out of contract';
-            }
-
-            if($invoiceoption=='Commercial support')
-            {
-                $invoicestatus='Commercial support';
-            }
-
-            if($invoiceoption=='Swisscom ServiceNow')
-            {
-                $invoicestatus='Swisscom ServiceNow';
-                
-            }
+            
                 
                 
             
