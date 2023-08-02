@@ -621,11 +621,11 @@ class Bix_datagateway_controller extends CI_Controller {
         echo "<br/><br/><b> syncdata $bixdata_table stop: $now </b><br/>";
     }
     
-    public function custom_sync_rapportidilavoro($id_dipendente)
+    public function custom_sync_rapportidilavoro_bak($id_dipendente)
     {
         echo "test $id_dipendente";
     }
-    public function custom_sync_rapportidilavoro_bak($id_dipendente)
+    public function custom_sync_rapportidilavoro($id_dipendente)
     {
         header("Access-Control-Allow-Methods: POST, GET");
         header("Access-Control-Allow-Origin: *");
