@@ -627,6 +627,7 @@ class Bix_datagateway_controller extends CI_Controller {
     }
     public function custom_sync_rapportidilavoro($id_dipendente)
     {
+        ini_set('max_execution_time', 2400);
         header("Access-Control-Allow-Methods: POST, GET");
         header("Access-Control-Allow-Origin: *");
         $now = date('Y-m-d H:i:s');
