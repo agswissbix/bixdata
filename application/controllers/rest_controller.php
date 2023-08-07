@@ -110,12 +110,26 @@ class Rest_controller extends CI_Controller {
         }
         
         //view
-        $view_condition= $this->Sys_model->db_get_value('sys_view',"query_conditions","id='$viewid'");
+        $view= $this->Sys_model->db_get_row('sys_view',"*","id='$viewid'");
         
-        if(isnotempty($view_condition))
+        
+        $order_field=$columns[3]['id'];
+        $order_ascdesc='desc';
+        
+        if($view!=null)
         {
+            $view_condition=$view['query_conditions'];
             $view_condition=str_replace('$userid$', $userid, $view_condition);
             $where=$where." AND ".$view_condition;
+            
+            if(isnotempty($view['order_field']))
+            {
+                $order_field=$view['order_field'];
+            }
+            if(isnotempty($view['order_ascdesc']))
+            {
+                $order_ascdesc=$view['order_ascdesc'];
+            }
         }
         
         $sql=$sql." $from WHERE $where  AND user_$table.deleted_<>'Y' ) AS risultati  ";
@@ -126,7 +140,7 @@ class Rest_controller extends CI_Controller {
             $offset=0;
             $limit=1000000000000000;
         }
-        $return['records']=$this->Sys_model->get_records($table,$sql,$columns[3]['id'],'desc',$offset,$limit);
+        $return['records']=$this->Sys_model->get_records($table,$sql,$order_field,$order_ascdesc,$offset,$limit);
         
         $reports_return=array();
         /*
@@ -378,6 +392,21 @@ class Rest_controller extends CI_Controller {
         $recordid=$post['recordid'];
         $fields_jsonstring=$post['fields'];
         $fields=json_decode($fields_jsonstring, true);
+        foreach ($fields as $fields_key => $field) {
+            if(is_array($field))
+            {
+                $field_value_new='';
+                foreach ($field as $field_key => $field_value) {
+                    if($field_value_new!='')
+                    {
+                        $field_value_new=$field_value_new."|##|";
+                    }
+                    $field_value_new=$field_value_new.$field_value;
+                    
+                }
+                $fields[$fields_key]=$field_value_new;
+            }
+        }
         if($recordid=='None')
         {
             $fields['id']=$this->Sys_model->generate_seriale($tableid, 'id');
@@ -783,6 +812,16 @@ class Rest_controller extends CI_Controller {
             $fields['usedhours']=$usedhours;
             $fields['residualhours']=$contracthours+$previousresidual-$usedhours;
             $fields['progress']=($fields['usedhours']/($contracthours+$previousresidual))*100;
+            
+            
+            if(isEmpty($fields['type']))
+            {
+                $fields['type']='Monte Ore';
+            }
+            if(isEmpty($fields['status']))
+            {
+                $fields['status']='In Progress';
+            }
         }
         
         //------TASK--------------------------------------------------------------------------------------
@@ -1076,6 +1115,35 @@ class Rest_controller extends CI_Controller {
         $url="http://10.0.0.23:8822/jdocweb/index.php/sys_viewcontroller/api_hubspot_update_dealstage/$type/$dealid/$dealstage";
         echo $url."<br/><br/>";
         var_dump(file($url));
+    }
+    
+    
+    function rinnova_contratto()
+    {
+        $post=$_POST;
+        $old_recordid=$post['recordid'];
+        $update_fields=array();
+        $update_fields['status']='Complete';
+        $this->Sys_model->update_record('servicecontract',1,$update_fields,"recordid_='$old_recordid'");
+        
+        $new_recordid=$this->Sys_model->duplica_record('servicecontract', $old_recordid);
+        
+        $old_record=$this->Sys_model->get_record('servicecontract', $old_recordid);
+        $new_record=$this->Sys_model->get_record('servicecontract', $new_recordid);
+        
+        $update_fields=array();
+        $update_fields['previousinvoiceno']=$old_record['invoiceno'];
+        $update_fields['previousresidual']=$old_record['residualhours'];
+        $update_fields['contracthours']=$post['contracthours'];
+        $update_fields['residualhours']=$post['contracthours']+$old_record['residualhours'];
+        $update_fields['invoiceno']=$post['invoiceno'];
+        $update_fields['startdate']=$post['startdate'];
+        $update_fields['status']='In progress';
+        $update_fields['recordidcompany_']=$old_record['recordidcompany_'];
+        
+        $this->Sys_model->update_record('servicecontract',1,$update_fields,"recordid_='$new_recordid'");
+        
+        
     }
     
     
