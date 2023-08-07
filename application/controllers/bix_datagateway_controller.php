@@ -233,6 +233,8 @@ class Bix_datagateway_controller extends CI_Controller {
         {
             //$this->update_invoiceline($recordid);
         }
+        
+        
         echo "<b>Log: fine sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s')."</b><br/>";
     }
     
@@ -688,7 +690,43 @@ class Bix_datagateway_controller extends CI_Controller {
                 if(array_key_exists($key, $bixdata_fields))
                 {
                     if($sync_service=='Progel')
-                    {
+                    {   
+                        if($key=='Situazione')
+                        {
+                            if($field=='Malattia')
+                            {
+                                $field=='kr';
+                            }
+                            if($field=='Mal. con cert.')
+                            {
+                                $field=='mal';
+                            }
+                            if($field=='Inf. con certif')
+                            {
+                                $field=='inf';
+                            }
+                            if($field=='Perm. non pag.')
+                            {
+                                $field=='p';
+                            }
+                            if($field=='Ferie pagate')
+                            {
+                                $field=='f';
+                            }
+                            if($field=='Non disponibile')
+                            {
+                                $field=='nd';
+                            }
+                            if($field=='Ferie non pag.')
+                            {
+                                $field=='fnp';
+                            }
+                            if($field=='Ferie ½')
+                            {
+                                $field=='½ F';
+                            }
+                        }
+                        
                         $sync_fields[$bixdata_fields[$key]]=conv_text_utf8($field); 
                     }
                     else
