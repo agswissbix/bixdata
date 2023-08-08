@@ -814,11 +814,11 @@ class Rest_controller extends CI_Controller {
             $fields['progress']=($fields['usedhours']/($contracthours+$previousresidual))*100;
             
             
-            if(isEmpty($fields['type']))
+            if(isEmpty($row['type']))
             {
                 $fields['type']='Monte Ore';
             }
-            if(isEmpty($fields['status']))
+            if(isEmpty($row['status']))
             {
                 $fields['status']='In Progress';
             }
