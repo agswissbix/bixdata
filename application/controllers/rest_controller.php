@@ -1139,6 +1139,7 @@ class Rest_controller extends CI_Controller {
         $update_fields['invoiceno']=$post['invoiceno'];
         $update_fields['startdate']=$post['startdate'];
         $update_fields['status']='In progress';
+        $update_fields['progress']=0;
         $update_fields['recordidcompany_']=$old_record['recordidcompany_'];
         
         $this->Sys_model->update_record('servicecontract',1,$update_fields,"recordid_='$new_recordid'");

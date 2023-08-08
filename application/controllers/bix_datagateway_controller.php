@@ -695,35 +695,35 @@ class Bix_datagateway_controller extends CI_Controller {
                         {
                             if($field=='Malattia')
                             {
-                                $field=='kr';
+                                $field='kr';
                             }
                             if($field=='Mal. con cert.')
                             {
-                                $field=='mal';
+                                $field='mal';
                             }
                             if($field=='Inf. con certif')
                             {
-                                $field=='inf';
+                                $field='inf';
                             }
                             if($field=='Perm. non pag.')
                             {
-                                $field=='p';
+                                $field='p';
                             }
                             if($field=='Ferie pagate')
                             {
-                                $field=='f';
+                                $field='f';
                             }
                             if($field=='Non disponibile')
                             {
-                                $field=='nd';
+                                $field='nd';
                             }
                             if($field=='Ferie non pag.')
                             {
-                                $field=='fnp';
+                                $field='fnp';
                             }
                             if($field=='Ferie ½')
                             {
-                                $field=='½ F';
+                                $field='½ F';
                             }
                         }
                         
