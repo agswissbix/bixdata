@@ -749,7 +749,7 @@ class Bix_datagateway_controller extends CI_Controller {
   
             $origin_key_value=$sync_fields[$sync_field_bixdata];
             echo "<b>Log: inizio sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s')."</b><br/>";
-            $bixdata_row= $this->db_get_row('user_rapportidilavoro','*',"$sync_field_bixdata='$origin_key_value'");
+            $bixdata_row= $this->db_get_row('user_rapportidilavoro','*',"$sync_field_bixdata='$origin_key_value' AND (alias is null OR alias='')");
             if($bixdata_row!=null)
             {
                     echo '<span style="color:green">UPDATE RECORD</span> <br/>';
