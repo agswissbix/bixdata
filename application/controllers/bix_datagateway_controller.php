@@ -171,7 +171,7 @@ class Bix_datagateway_controller extends CI_Controller {
            
         }
         $sql=$sql." WHERE $condition";
-        //echo $sql."<br/>";
+        echo $sql."<br/>";
         $this->execute_query($sql);
         
     }
