@@ -172,7 +172,7 @@ class Bix_datagateway_controller extends CI_Controller {
         }
         $sql=$sql." WHERE $condition";
         echo $sql."<br/>";
-        $this->execute_query($sql);
+        //$this->execute_query($sql);
         
     }
     
@@ -745,7 +745,27 @@ class Bix_datagateway_controller extends CI_Controller {
             echo "SYNC FIELD BIXDATA <br/>";
             echo $sync_field_bixdata."<br/>";
            
-            $this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
+            //$this->sync_record($bixdata_table, $sync_fields,$sync_field,$sync_field_bixdata);
+  
+            $origin_key_value=$sync_fields[$sync_field_bixdata];
+            echo "<b>Log: inizio sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s')."</b><br/>";
+            $bixdata_row= $this->db_get_row('user_rapportidilavoro','*',"$sync_field_bixdata='$origin_key_value'");
+            if($bixdata_row!=null)
+            {
+                    echo '<span style="color:green">UPDATE RECORD</span> <br/>';
+                    $recordid=$bixdata_row['recordid_'];
+                    $this->update_record('rapportidilavoro',1,$sync_fields,"recordid_='$recordid'"); 
+            }
+            else
+            {
+                echo '<span style="color:red">INSERT RECORD --> NO - UPDATE ONLY</span> <br/>';
+            }
+            echo "<b>Log: fine sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s')."</b><br/>";
+        
+        
+        
+        
+        
             $counter++;
             echo "Counter $counter";
             echo "<br/><br/><br/><br/>";
