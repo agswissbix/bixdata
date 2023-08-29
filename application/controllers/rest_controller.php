@@ -548,6 +548,11 @@ class Rest_controller extends CI_Controller {
                 
             }
             
+            if($invoiceoption=='Out of contract')
+            {
+                $invoicestatus='Out of contract';
+            }
+            
             
                 
             if($service=='Amministrazione')
