@@ -1015,7 +1015,7 @@ if($cliente_id=='BaseUniludes')
 <!-- IMPOSTAZIONI -->
 
         <?php
-        if(($userid==1)||($userid==2))
+        if(true)//if(($userid==1)||($userid==2))
         {
         ?>
             <div class="menu_btn_container">
