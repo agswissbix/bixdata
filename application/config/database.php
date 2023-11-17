@@ -45,7 +45,7 @@
 | the active record class
 */
 
-$active_group = 'bixdata';
+$active_group = 'bixdata_locale';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
@@ -72,6 +72,12 @@ $db['bixdata']['database'] = 'bixdata';
 $db['bixdata']['username'] = 'vtenext';
 $db['bixdata']['password'] = 'Jbt$5qNbJXg';
 $db['bixdata']['dbdriver'] = 'mysqli';
+
+$db['bixdata_locale']['hostname'] = 'localhost';
+$db['bixdata_locale']['database'] = 'bixdata';
+$db['bixdata_locale']['username'] = 'root';
+$db['bixdata_locale']['password'] = '';
+$db['bixdata_locale']['dbdriver'] = 'mysqli';
 
 $db['default_sqlserver']['hostname'] = 'localhost';
 $db['default_sqlserver']['database'] = 'easywork_data';
