@@ -323,12 +323,13 @@ class Rest_controller extends CI_Controller {
         
         if((array_key_exists('master_tableid', $post))&&(array_key_exists('master_recordid', $post)))
         {
+            
             $master_tableid=$post['master_tableid'];
             $master_recordid=$post['master_recordid'];
             $master_fieldid="_recordid".$master_tableid;
             if(array_key_exists($master_fieldid, $fields))
             {
-                $sql="SELECT keyfieldlink,label FROM sys_field WHERE fieldid='_recordid$master_tableid' " ;
+                $sql="SELECT keyfieldlink,label FROM sys_field WHERE fieldid='_recordid$master_tableid' AND tableid='$tableid' " ;
                 $result=  $this->Sys_model->select($sql);
                 if(count($result)>0)
                 {
@@ -343,6 +344,8 @@ class Rest_controller extends CI_Controller {
                 $return_fields[$label][$master_fieldid]['valuecode'][0]['code']=$master_recordid;
             }
             
+            
+            
             $tableid_linked_tables=$this->Sys_model->db_get("sys_table_link","*","tablelinkid='$tableid'");
             foreach ($tableid_linked_tables as $key => $tableid_linked_table) {
                 $tableid_linked_tableid=$tableid_linked_table['tableid'];
@@ -353,11 +356,12 @@ class Rest_controller extends CI_Controller {
                     $master_fieldid="_recordid".$tableid_linked_tableid;
                     if(array_key_exists($master_fieldid, $fields))
                     {
-                        $sql="SELECT keyfieldlink FROM sys_field WHERE tableid='$tableid' AND tablelink='$tableid_linked_tableid'" ;
+                        $sql="SELECT keyfieldlink,label FROM sys_field WHERE fieldid='_recordid$tableid_linked_tableid' AND tableid='$tableid' " ;
                         $result=  $this->Sys_model->select($sql);
                         if(count($result)>0)
                         {
                             $keyfieldlink=$result[0]['keyfieldlink'];
+                            $label=$result[0]['label'];
                         }
                         $keyfieldlink= strtolower($keyfieldlink);
                         $value=$this->Sys_model->db_get_value("user_$tableid_linked_tableid",$keyfieldlink,"recordid_='$tableid_linked_tableid_recordid'");
@@ -368,6 +372,8 @@ class Rest_controller extends CI_Controller {
                     }
                 }
             }
+             
+             
             
             
         }
@@ -419,7 +425,8 @@ class Rest_controller extends CI_Controller {
         
         $this->custom_update($tableid, $recordid);
         $this->custom_update($tableid, $recordid);
-        
+        $return['recordid']=$recordid;
+        echo json_encode($return);
     }
     
     public function custom_update($tableid,$recordid)
