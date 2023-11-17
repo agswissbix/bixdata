@@ -240,7 +240,7 @@ class Rest_controller extends CI_Controller {
         else
         {
             $recordid='null';
-        }
+        } 
         
         $tableid=$post['tableid'];
         $userid=$post['userid'];
