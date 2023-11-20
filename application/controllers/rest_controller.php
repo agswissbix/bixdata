@@ -827,8 +827,10 @@ class Rest_controller extends CI_Controller {
             }
             $fields['usedhours']=$usedhours;
             $fields['residualhours']=$contracthours+$previousresidual-$usedhours;
-            $fields['progress']=($fields['usedhours']/($contracthours+$previousresidual))*100;
-            
+            if($contracthours+$previousresidual!=0)
+            {
+                $fields['progress']=($fields['usedhours']/($contracthours+$previousresidual))*100;
+            }
             
             if(isEmpty($row['type']))
             {
