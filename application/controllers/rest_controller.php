@@ -501,9 +501,10 @@ class Rest_controller extends CI_Controller {
                 $traveltimedecimal=$hours_decimal.".".$minutes_decimal;
                 $fields['traveltime_decimal']=$traveltimedecimal;
 
-                $totaltimedecimal=$worktimedecimal+$traveltimedecimal;
-                $fields['totaltime_decimal']=$totaltimedecimal;
+                
             }
+            $totaltimedecimal=$worktimedecimal+$traveltimedecimal;
+            $fields['totaltime_decimal']=$totaltimedecimal;
             
             
             $invoicestatus=$row['invoicestatus'];
@@ -713,8 +714,8 @@ class Rest_controller extends CI_Controller {
                        $unit_price=$sw_price;
                     }
 
-                    if(($serviceid=='Assistenza PBX' || $serviceid=='Assistenza IT' )&&(($itpbx_price != null)&& ($itpbx_price != '') &&($itpbx_price != 0)))
-                    {
+                    if(($service=='Assistenza PBX' || $service=='Assistenza IT' )&&(($itpbx_price != null)&& ($itpbx_price != '') &&($itpbx_price != 0)))
+                    { 
                        $unit_price=$itpbx_price;
                     }
 
