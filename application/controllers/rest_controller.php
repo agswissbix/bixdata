@@ -482,24 +482,28 @@ class Rest_controller extends CI_Controller {
             $fields['worktime_decimal']=$worktimedecimal;
             
             $traveltime=$row['traveltime'];
-            $traveltime_array=explode(":",$traveltime);
-            $hours_decimal=(string)((int)($traveltime_array[0]));
-            $minutes=$traveltime_array[1];
-            $minutes_decimal='00';
-            if($minutes=='00')
-                    $minutes_decimal='00';
-            if($minutes=='15')
-                    $minutes_decimal='25';
-            if($minutes=='30')
-                    $minutes_decimal='50';
-            if($minutes=='45')
-                    $minutes_decimal='75';
-            $traveltimedecimal=$hours_decimal.".".$minutes_decimal;
-            $fields['traveltime_decimal']=$traveltimedecimal;
-            
-            $totaltimedecimal=$worktimedecimal+$traveltimedecimal;
-            $fields['totaltime_decimal']=$totaltimedecimal;
-            
+            $traveltimedecimal=null;
+            $totaltimedecimal=null;
+            if(isnotempty($traveltime))
+            {
+                $traveltime_array=explode(":",$traveltime);
+                $hours_decimal=(string)((int)($traveltime_array[0]));
+                $minutes=$traveltime_array[1];
+                $minutes_decimal='00';
+                if($minutes=='00')
+                        $minutes_decimal='00';
+                if($minutes=='15')
+                        $minutes_decimal='25';
+                if($minutes=='30')
+                        $minutes_decimal='50';
+                if($minutes=='45')
+                        $minutes_decimal='75';
+                $traveltimedecimal=$hours_decimal.".".$minutes_decimal;
+                $fields['traveltime_decimal']=$traveltimedecimal;
+
+                $totaltimedecimal=$worktimedecimal+$traveltimedecimal;
+                $fields['totaltime_decimal']=$totaltimedecimal;
+            }
             
             
             $invoicestatus=$row['invoicestatus'];
