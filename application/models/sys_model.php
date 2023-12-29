@@ -3065,10 +3065,14 @@ class Sys_model extends CI_Model {
         return $return;
     }
     
-    function get_fields_table($tableid,$label='null',$recordid='null',$funzione='null',$type='null',$prefilledtable=array(),$origine_tableid='')
+    function get_fields_table($tableid,$label='null',$recordid='null',$funzione='null',$type='null',$prefilledtable=array(),$origine_tableid='',$userid=null)
     {
-        $userid=  $this->get_userid();
-        $emptyfields=  $this->get_emptyfields_table($tableid,$label,$funzione,$type);
+        if($userid==null)
+        {
+            $userid=  $this->get_userid();
+        }
+        
+        $emptyfields=  $this->get_emptyfields_table($tableid,$label,$funzione,$type,$userid);
         $filledfields=$emptyfields;
         $values_fields_table=array();
         //$prefilledfields=array();
@@ -3369,9 +3373,13 @@ class Sys_model extends CI_Model {
      * 
      * @mobile
      */
-    function get_emptyfields_table($tableid,$label='null',$funzione='null',$type='null')
+    function get_emptyfields_table($tableid,$label='null',$funzione='null',$type='null',$userid=null)
     {
-        $userid=  $this->get_userid();
+        if($userid==null)
+        {
+            $userid=  $this->get_userid();
+        }
+        
         $like= $this->get_like();
         $typepreference='campiInserimento';
         if($funzione=='ricerca')
@@ -3409,51 +3417,64 @@ class Sys_model extends CI_Model {
         }
         if($typepreference!='all')
         {
-            //prendo i campi di preferenza dell'utente
+            // prendo i campi dal nuovo sistema di ordinamento
             $sql="
-                SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_order.fieldorder,sys_field.default
-                FROM sys_field LEFT JOIN sys_user_order ON sys_field.fieldid=sys_user_order.fieldid
-                WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.userid=$userid AND sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='$typepreference'))
-                ORDER BY sys_user_order.fieldorder
+                SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_field_order.fieldorder,sys_field.default
+                FROM sys_field LEFT JOIN sys_user_field_order ON sys_field.id=sys_user_field_order.fieldid
+
+                WHERE sys_field.tableid='$tableid'  AND ((sys_user_field_order.userid=$userid AND sys_user_field_order.tableid = '$tableid' AND sys_user_field_order.typepreference='insert_fields'))
+                ORDER BY sys_user_field_order.fieldorder
                 ";
+            //prendo i campi di preferenza dell'utente
             $fields =  $this->select($sql);
+            
             if($fields==null)
             {
-                //prendo i campi di preferenza dai gruppi
-                $groups=  $this->Sys_model->db_get('sys_user_settings','*',"userid=$userid AND setting='group'");
-                foreach ($groups as $key => $group) {
-                    $groupuserid=$group['value'];
-                    $sql="
+                $sql="
                     SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_order.fieldorder,sys_field.default
                     FROM sys_field LEFT JOIN sys_user_order ON sys_field.fieldid=sys_user_order.fieldid
-                    WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.userid=$groupuserid AND sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='$typepreference'))
+                    WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.userid=$userid AND sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='$typepreference'))
                     ORDER BY sys_user_order.fieldorder
                     ";
-                    $fields =  $this->select($sql);
-                }
-                
-                if($fields==null)
-                {   
-                //prendo i campi di preferenza del superuser
-                $sql="
-                SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_order.fieldorder,sys_field.default
-                FROM sys_field LEFT JOIN sys_user_order ON sys_field.fieldid=sys_user_order.fieldid
-                WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.userid=1 AND sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='$typepreference'))
-                ORDER BY sys_user_order.fieldorder
-                ";
                 $fields =  $this->select($sql);
-                }
-                
                 if($fields==null)
                 {
-                    //prendo i campi di inserimento del superuser
+                    //prendo i campi di preferenza dai gruppi
+                    $groups=  $this->Sys_model->db_get('sys_user_settings','*',"userid=$userid AND setting='group'");
+                    foreach ($groups as $key => $group) {
+                        $groupuserid=$group['value'];
+                        $sql="
+                        SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_order.fieldorder,sys_field.default
+                        FROM sys_field LEFT JOIN sys_user_order ON sys_field.fieldid=sys_user_order.fieldid
+                        WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.userid=$groupuserid AND sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='$typepreference'))
+                        ORDER BY sys_user_order.fieldorder
+                        ";
+                        $fields =  $this->select($sql);
+                    }
+
+                    if($fields==null)
+                    {   
+                    //prendo i campi di preferenza del superuser
                     $sql="
                     SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_order.fieldorder,sys_field.default
                     FROM sys_field LEFT JOIN sys_user_order ON sys_field.fieldid=sys_user_order.fieldid
-                    WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='campiInserimento'))
+                    WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.userid=1 AND sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='$typepreference'))
                     ORDER BY sys_user_order.fieldorder
                     ";
                     $fields =  $this->select($sql);
+                    }
+
+                    if($fields==null)
+                    {
+                        //prendo i campi di inserimento del superuser
+                        $sql="
+                        SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_order.fieldorder,sys_field.default
+                        FROM sys_field LEFT JOIN sys_user_order ON sys_field.fieldid=sys_user_order.fieldid
+                        WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='campiInserimento'))
+                        ORDER BY sys_user_order.fieldorder
+                        ";
+                        $fields =  $this->select($sql);
+                    }
                 }
             }
         }
@@ -3499,7 +3520,7 @@ class Sys_model extends CI_Model {
             SELECT itemcode,itemdesc,'false' as link, 'null' as linkfield, 'null' as linkvalue, 'null' as linkedfield, 'null' as linkedvalue
             FROM sys_lookup_table_item 
             where LOOKUPTABLEID='$lookuptableid'
-            ORDER BY itemdesc    
+            ORDER BY itemorder asc, itemdesc asc
             ";
         if(($fieldid=='SETTORE')&($tableid=='SKILL'))
         {
@@ -5844,7 +5865,7 @@ class Sys_model extends CI_Model {
      */
     function get_values_fields_table($tableid,$recordid)
     {
-     $tableid=  strtolower($tableid);
+        $tableid=  strtolower($tableid);
         $table='user_'.$tableid;
         
         $select="SELECT * ";

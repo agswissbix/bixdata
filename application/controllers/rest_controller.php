@@ -199,15 +199,26 @@ class Rest_controller extends CI_Controller {
         $searchTerm=$post['searchTerm'];
         $where='TRUE';
         $sql="";
-        $sql="select risultati.recordid_,risultati.recordid_ as id, risultati.description as name, risultati.startdate as start, risultati.duedate as end FROM (SELECT *";
-        $sql=$sql." FROM user_$table WHERE $where AND (recordstatus_ is null OR recordstatus_!='temp') ) AS risultati LEFT JOIN user_".$table."_owner ON risultati.recordid_=user_".$table."_owner.recordid_ where ownerid_ is null OR ownerid_=1 ";
-        $records=$this->Sys_model->get_records($table,$sql,'start','asc',0,100);
-        $return['groups']=array();
+        $sql="select risultati.recordid_ as recordid,dealname as title,closedate as date, dealuser1 as user, amount as field1, amount as field2, amount as field3, amount as field4,'tag' as tag, dealstage FROM (SELECT *";
+        $sql=$sql." FROM user_$table WHERE $where AND deleted_='N' AND (recordstatus_ is null OR recordstatus_!='temp') ) AS risultati LEFT JOIN user_".$table."_owner ON risultati.recordid_=user_".$table."_owner.recordid_ where ownerid_ is null OR ownerid_=1 order by recordid desc LIMIT 100 ";
+        //$records=$this->Sys_model->get_records($table,$sql,'recordid_','desc',0,10);
         
+
+        $records= $this->Sys_model->select($sql);
+        $return['groups']=array();
+        $groups= $this->Sys_model->select("SELECT * FROM sys_lookup_table_item WHERE lookuptableid='dealstage_deal' order by itemorder asc");
+        foreach ($groups as $key => $group) {
+            $return['groups'][$group['itemcode']]['description']=$group['itemdesc'];
+            $return['groups'][$group['itemcode']]['records']=array();
+        }
         foreach ($records as $key => $record) {
             $groupby_field_value=$record[$groupby_field];
-            $return['groups'][$groupby_field_value]['description']=$groupby_field_value;
-            $return['groups'][$groupby_field_value]['records']=$record;
+            if(array_key_exists($groupby_field_value, $return['groups']))
+            {
+                $return['groups'][$groupby_field_value]['description']=$groupby_field_value;
+                $return['groups'][$groupby_field_value]['records'][]=$record;
+            }
+            
         }
         echo json_encode($return);
     }
@@ -244,8 +255,12 @@ class Rest_controller extends CI_Controller {
         
         $tableid=$post['tableid'];
         $userid=$post['userid'];
-        $fields=$this->Sys_model->get_fields_table($tableid,'null',$recordid,'visualizzazione');
+        $fields=$this->Sys_model->get_fields_table($tableid,'null',$recordid,'visualizzazione','null',array(),'',$userid);
         $return_fields=array();
+        $labels=$this->Sys_model->db_get("sys_table_label","*","tableid='$tableid'","ORDER BY labelorder asc");
+        foreach ($labels as $key => $label) {
+            $return_fields[$label['labelname']]=array();
+        }
         foreach ($fields as $key => $field) {
             $label=$field['label'];
             $substring=substr($key, -1);
