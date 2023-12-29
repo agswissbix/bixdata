@@ -3431,6 +3431,19 @@ class Sys_model extends CI_Model {
             if($fields==null)
             {
                 $sql="
+                SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_field_order.fieldorder,sys_field.default
+                FROM sys_field LEFT JOIN sys_user_field_order ON sys_field.id=sys_user_field_order.fieldid
+
+                WHERE sys_field.tableid='$tableid'  AND ((sys_user_field_order.userid=1 AND sys_user_field_order.tableid = '$tableid' AND sys_user_field_order.typepreference='insert_fields'))
+                ORDER BY sys_user_field_order.fieldorder
+                ";
+                //prendo i campi di preferenza del superuser
+                $fields =  $this->select($sql);
+            }
+            
+            if($fields==null)
+            {
+                $sql="
                     SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_order.fieldorder,sys_field.default
                     FROM sys_field LEFT JOIN sys_user_order ON sys_field.fieldid=sys_user_order.fieldid
                     WHERE sys_field.tableid $like '$tableid' AND sys_field.label!='Old' $label_condition AND ((sys_user_order.userid=$userid AND sys_user_order.tableid $like '$tableid' AND sys_user_order.typepreference='$typepreference'))
