@@ -912,7 +912,17 @@ class Rest_controller extends CI_Controller {
         foreach ($records_linkedmaster as $key => $record_linkedmaster) {
             $record_linkedmaster=array_values($record_linkedmaster);
             $record['id']=$record_linkedmaster[0];
-            $record['value']=$record_linkedmaster[1];
+            $record_value='';
+            foreach ($record_linkedmaster as $record_linkedmaster_key => $record_linkedmaster_value) {
+                if($record_linkedmaster_key!=0)
+                {
+                    if($record_value!='')
+                        $record_value=$record_value.'-';
+                    $record_value=$record_value.$record_linkedmaster_value;
+                }
+                
+            }
+            $record['value']=$record_value;
             $return[]=$record;
         }
         

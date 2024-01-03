@@ -10447,7 +10447,14 @@ class Sys_model extends CI_Model {
       $keyfieldlink= strtolower($keyfieldlink);
       $keyfieldlink_array=  explode(",", $keyfieldlink);
       $keyfieldlink_order=$keyfieldlink_array[0];
-      
+      $keyfield_condition="";
+      foreach ($keyfieldlink_array as $keyfieldlink_array_key => $keyfieldlink_array_value) {
+          if($keyfield_condition!='')
+              $keyfield_condition=$keyfield_condition." OR ";
+          $keyfield_condition=$keyfield_condition."$keyfieldlink_array_value like '%$term%'";
+      }
+      if($keyfield_condition=='')
+          $keyfield_condition='true';
       
       
       if($term=="sys_recent")
@@ -10462,7 +10469,7 @@ class Sys_model extends CI_Model {
          }
          else
          {
-             $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfieldlink like '%$term%' ORDER BY $keyfieldlink_order LIMIT 20";
+             $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfield_condition ORDER BY recordid_ desc LIMIT 20";
          }
       }
       $result=  $this->select($sql);
