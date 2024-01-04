@@ -892,6 +892,27 @@ class Rest_controller extends CI_Controller {
            
         }
         
+//------DEALLINE---------------------------------------------------------------------------------------------
+        if($tableid=='dealline')
+        {
+            $this->custom_update('deal', $row['recordiddeal_']);
+        }
+        
+//------DEAL---------------------------------------------------------------------------------------------
+        if($tableid=='deal')
+        {
+            $amount=0;
+            $expectedmargin=0;
+            
+            // aggiornamento ore totali in base ai timesheet
+            $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid'");
+            foreach ($deallines as $key => $dealline) {
+                $expectedmargin=$expectedmargin+$dealline['expectedmargin'];
+                $amount=$amount+$dealline['price'];
+            }
+            $fields['amount']=$amount;
+
+        }
         
         
         
