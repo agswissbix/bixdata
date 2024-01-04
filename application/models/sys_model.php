@@ -10472,7 +10472,7 @@ class Sys_model extends CI_Model {
              $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfield_condition ORDER BY recordid_ desc LIMIT 20";
              if($mastertableid=='product')
              {
-                 $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfield_condition ORDER BY priorityid,name desc LIMIT 30";
+                 $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfield_condition ORDER BY priorityid desc,name asc LIMIT 30";
              }
          }
       }
