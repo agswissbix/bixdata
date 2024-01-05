@@ -903,14 +903,13 @@ class Rest_controller extends CI_Controller {
         {
             
             // data apertura
-            if(isempty($fields['opendate']))
-            {
+            //if(isempty($fields['opendate']))
+            //{
                 //$fields['opendate']=date("Y-m-d", strtotime($fields['creation_']));
-            }
+            //}
             
             $amount=0;
             $expectedcost=0;
-            $expectedmargin=0;
             
             // aggiornamento prezzo costo e margine totale
             $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid'");
