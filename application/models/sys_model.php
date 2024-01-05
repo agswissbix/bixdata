@@ -10474,6 +10474,10 @@ class Sys_model extends CI_Model {
              {
                  $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfield_condition ORDER BY priorityid desc,name asc LIMIT 30";
              }
+             if(($tableid=='dealcontact')&&($mastertableid=='contact'))
+             {
+                 //$sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfield_condition AND recordidcontact_='' ORDER BY priorityid desc,name asc LIMIT 30";
+             }
          }
       }
       $result=  $this->select($sql);
