@@ -903,9 +903,10 @@ class Rest_controller extends CI_Controller {
         {
             
             // data apertura
-            if(isempty($fields['opendate']))
+            if(true)
             {
-                $fields['opendate']=date("Y-m-d", strtotime($fields['creation_']));
+                $creationdate=$this->Sys_model->db_get_value("user_deal","creation_","recordid_='$recordid'");
+                $fields['opendate']=date("Y-m-d", strtotime($creationdate));
             }
             
             $amount=0;
