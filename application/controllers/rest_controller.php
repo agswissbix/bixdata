@@ -903,10 +903,10 @@ class Rest_controller extends CI_Controller {
         {
             
             // data apertura
-            //if(isempty($fields['opendate']))
-            //{
-                //$fields['opendate']=date("Y-m-d", strtotime($fields['creation_']));
-            //}
+            if(isempty($fields['opendate']))
+            {
+                $fields['opendate']=date("Y-m-d", strtotime($fields['creation_']));
+            }
             
             $amount=0;
             $expectedcost=0;
