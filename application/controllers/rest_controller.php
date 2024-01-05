@@ -901,16 +901,28 @@ class Rest_controller extends CI_Controller {
 //------DEAL---------------------------------------------------------------------------------------------
         if($tableid=='deal')
         {
+            
+            // data apertura
+            if(isempty($fields['opendate']))
+            {
+                $fields['opendate']=date("Y-m-d", strtotime($fields['creation_']));
+            }
+            
             $amount=0;
+            $expectedcost=0;
             $expectedmargin=0;
             
-            // aggiornamento ore totali in base ai timesheet
+            // aggiornamento prezzo costo e margine totale
             $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid'");
             foreach ($deallines as $key => $dealline) {
-                $expectedmargin=$expectedmargin+$dealline['expectedmargin'];
                 $amount=$amount+$dealline['price'];
+                $expectedcost=$expectedcost+$dealline['expectedcost'];
+                
             }
+            $expectedmargin=$amount-$expectedcost;
             $fields['amount']=$amount;
+            $fields['expectedcost']=$expectedcost;
+            $fields['expectedmargin']=$expectedmargin;
 
         }
         
