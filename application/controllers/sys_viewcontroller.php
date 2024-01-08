@@ -369,6 +369,7 @@ class Sys_viewcontroller extends CI_Controller {
         $data['activetab']=$activetab;
         $data['data']['dashboards']=array();
         $data['data']['block']=array();
+        /*
         $dashboards=$this->Sys_model->db_get('sys_dashboard');
         foreach ($dashboards as $key => $dashboard) {
             $data['data']['dashboards'][$dashboard['id']]['name']=$dashboard['name'];
@@ -444,7 +445,7 @@ class Sys_viewcontroller extends CI_Controller {
             $data['data']['dashboards'][$dashboard['dashboardid']]['block'][$key]['width']=$dashboard['width'];
             $data['data']['dashboards'][$dashboard['dashboardid']]['block'][$key]['height']=$dashboard['height'];
             $data['data']['dashboards'][$dashboard['dashboardid']]['block'][$key]['content']=$dashboard_block;
-        }
+        }*/
         
         
         $settings= $this->Sys_model->get_settings();
