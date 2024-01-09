@@ -908,7 +908,7 @@ class Rest_controller extends CI_Controller {
                 $creationdate=$this->Sys_model->db_get_value("user_deal","creation_","recordid_='$recordid'");
                 $fields['opendate']=date("Y-m-d", strtotime($creationdate));
             }
-            $deal_amount=$fields['amount'];
+            $deal_amount=$row['amount'];
             $calc_amount=0;
             $expectedcost=0;
             
