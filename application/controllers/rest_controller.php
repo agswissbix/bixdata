@@ -912,9 +912,10 @@ class Rest_controller extends CI_Controller {
             $calc_amount=0;
             $expectedcost=0;
             $deal_expectedcost=$row['expectedcost'];
+            $calc_expectedcost=0;
             
             // aggiornamento prezzo costo e margine totale
-            $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid'");
+            $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid' AND deleted_='N'");
             foreach ($deallines as $key => $dealline) {
                 $calc_amount=$calc_amount+$dealline['price'];
                 $calc_expectedcost=$expectedcost+$dealline['expectedcost'];
