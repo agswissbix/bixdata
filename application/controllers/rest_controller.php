@@ -911,12 +911,13 @@ class Rest_controller extends CI_Controller {
             $deal_amount=$row['amount'];
             $calc_amount=0;
             $expectedcost=0;
+            $deal_expectedcost=$row['expectedcost'];
             
             // aggiornamento prezzo costo e margine totale
             $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid'");
             foreach ($deallines as $key => $dealline) {
                 $calc_amount=$calc_amount+$dealline['price'];
-                $expectedcost=$expectedcost+$dealline['expectedcost'];
+                $calc_expectedcost=$expectedcost+$dealline['expectedcost'];
                 
             }
             if($calc_amount==0)
@@ -926,6 +927,14 @@ class Rest_controller extends CI_Controller {
             else
             {
                 $amount=$calc_amount;
+            }
+            if($calc_expectedcost==0)
+            {
+               $expectedcost= $deal_expectedcost;
+            }
+            else
+            {
+                $expectedcost=$calc_expectedcost;
             }
             $expectedmargin=$amount-$expectedcost;
             $fields['amount']=sprintf("%.2f", $amount);
