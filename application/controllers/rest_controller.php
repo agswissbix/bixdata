@@ -920,9 +920,9 @@ class Rest_controller extends CI_Controller {
                 
             }
             $expectedmargin=$amount-$expectedcost;
-            $fields['amount']=$amount;
-            $fields['expectedcost']=$expectedcost;
-            $fields['expectedmargin']=$expectedmargin;
+            $fields['amount']=sprintf("%.2f", $amount);
+            $fields['expectedcost']=sprintf("%.2f", $expectedcost);
+            $fields['expectedmargin']= sprintf("%.2f", $expectedmargin);
 
         }
         
