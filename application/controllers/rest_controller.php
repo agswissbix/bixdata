@@ -908,16 +908,24 @@ class Rest_controller extends CI_Controller {
                 $creationdate=$this->Sys_model->db_get_value("user_deal","creation_","recordid_='$recordid'");
                 $fields['opendate']=date("Y-m-d", strtotime($creationdate));
             }
-            
-            $amount=0;
+            $deal_amount=$fields['amount'];
+            $calc_amount=0;
             $expectedcost=0;
             
             // aggiornamento prezzo costo e margine totale
             $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid'");
             foreach ($deallines as $key => $dealline) {
-                $amount=$amount+$dealline['price'];
+                $calc_amount=$calc_amount+$dealline['price'];
                 $expectedcost=$expectedcost+$dealline['expectedcost'];
                 
+            }
+            if($calc_amount==0)
+            {
+               $amount= $deal_amount;
+            }
+            else
+            {
+                $amount=$calc_amount;
             }
             $expectedmargin=$amount-$expectedcost;
             $fields['amount']=sprintf("%.2f", $amount);
