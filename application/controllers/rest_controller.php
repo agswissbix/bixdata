@@ -918,7 +918,7 @@ class Rest_controller extends CI_Controller {
             $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid' AND deleted_='N'");
             foreach ($deallines as $key => $dealline) {
                 $calc_amount=$calc_amount+$dealline['price'];
-                $calc_expectedcost=$expectedcost+$dealline['expectedcost'];
+                $calc_expectedcost=$calc_expectedcost+$dealline['expectedcost'];
                 
             }
             if($calc_amount==0)
