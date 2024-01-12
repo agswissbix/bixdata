@@ -3418,11 +3418,19 @@ class Sys_model extends CI_Model {
         if($typepreference!='all')
         {
             // prendo i campi dal nuovo sistema di ordinamento
+            if($funzione=='search_fields')
+            {
+                $funzione=='search_fields';
+            }
+            else
+            {
+                $funzione='insert_fields';
+            }
             $sql="
                 SELECT sys_field.*,sys_field.tableid,sys_field.fieldid,sys_field.fieldtypeid,sys_field.length,sys_field.decimalposition,sys_field.description,sys_field.fieldorder,sys_field.lookuptableid,sys_field.label,sys_field.tablelink,sys_user_field_order.fieldorder,sys_field.default
                 FROM sys_field LEFT JOIN sys_user_field_order ON sys_field.id=sys_user_field_order.fieldid
 
-                WHERE sys_field.tableid='$tableid'  AND ((sys_user_field_order.userid=$userid AND sys_user_field_order.tableid = '$tableid' AND sys_user_field_order.typepreference='insert_fields'))
+                WHERE sys_field.tableid='$tableid'  AND ((sys_user_field_order.userid=$userid AND sys_user_field_order.tableid = '$tableid' AND sys_user_field_order.typepreference='$funzione'))
                 ORDER BY sys_user_field_order.fieldorder
                 ";
             //prendo i campi di preferenza dell'utente

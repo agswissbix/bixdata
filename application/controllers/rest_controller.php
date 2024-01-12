@@ -261,7 +261,8 @@ class Rest_controller extends CI_Controller {
         
         $tableid=$post['tableid'];
         $userid=$post['userid'];
-        $fields=$this->Sys_model->get_fields_table($tableid,'null',$recordid,'visualizzazione','null',array(),'',$userid);
+        $context=$post['context'];
+        $fields=$this->Sys_model->get_fields_table($tableid,'null',$recordid,$context,'null',array(),'',$userid);
         $return_fields=array();
         $labels=$this->Sys_model->db_get("sys_table_label","*","tableid='$tableid'","ORDER BY labelorder asc");
         foreach ($labels as $key => $label) {
