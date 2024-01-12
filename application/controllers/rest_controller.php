@@ -118,7 +118,7 @@ class Rest_controller extends CI_Controller {
         
         if($table=='deal')
         {
-            $order_field='closedate';
+            $order_field='opendate';
             $order_ascdesc='desc';
         }
         
