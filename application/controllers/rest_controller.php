@@ -116,6 +116,12 @@ class Rest_controller extends CI_Controller {
         $order_field=$columns[3]['id'];
         $order_ascdesc='desc';
         
+        if($table=='deal')
+        {
+            $order_field='closedate';
+            $order_ascdesc='desc';
+        }
+        
         if($view!=null)
         {
             $view_condition=$view['query_conditions'];
