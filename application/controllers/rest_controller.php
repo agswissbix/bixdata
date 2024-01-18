@@ -920,12 +920,22 @@ class Rest_controller extends CI_Controller {
             $expectedcost=0;
             $deal_expectedcost=$row['expectedcost'];
             $calc_expectedcost=0;
-            
+            $fields['fixedprice']='No';
             // aggiornamento prezzo costo e margine totale
             $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid' AND deleted_='N'");
             foreach ($deallines as $key => $dealline) {
+                $recordid_dealline=$dealline['recordid_'];
+                $recordid_product=$dealline['recordidproduct_'];
                 $calc_amount=$calc_amount+$dealline['price'];
                 $calc_expectedcost=$calc_expectedcost+$dealline['expectedcost'];
+                $product_fixedprice=$this->Sys_model->db_get_value("user_product","fixedprice","recordid_='$recordid_product' AND deleted_='N'");
+                if(isnotempty($product_fixedprice))
+                {
+                    if($product_fixedprice['fixedprice']=='Si')
+                    {
+                        $fields['fixedprice']='Si';
+                    }
+                }
                 
             }
             if($calc_amount==0)
