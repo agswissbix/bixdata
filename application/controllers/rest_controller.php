@@ -1025,7 +1025,7 @@ class Rest_controller extends CI_Controller {
         $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
         $conn = sqlsrv_connect( $serverName, $connectionInfo); 
         
-        $deals= $this->Sys_model->db_get("user_deal","*","sync_adiuto='Si' ","ORDER BY recordid_ desc");
+        $deals= $this->Sys_model->db_get("user_deal","*","sync_adiuto='Si' and dealstatus='Vinta'","ORDER BY recordid_ desc");
         foreach ($deals as $key => $deal) {
             $fields=array();
             echo $deal['id']." - ".$deal['dealname']."<br/>";
