@@ -1025,7 +1025,7 @@ class Rest_controller extends CI_Controller {
         $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
         $conn = sqlsrv_connect( $serverName, $connectionInfo); 
         
-        $deals= $this->Sys_model->db_get("user_deal","*","sync_adiuto='Si'","ORDER BY recordid_ desc");
+        $deals= $this->Sys_model->db_get("user_deal","*","sync_adiuto='Si' and id=1860","ORDER BY recordid_ desc");
         foreach ($deals as $key => $deal) {
             $fields=array();
             echo $deal['id']." - ".$deal['dealname']."<br/>";
@@ -1059,7 +1059,7 @@ class Rest_controller extends CI_Controller {
                     }
                     
                     $fields['dealstage']=$updated_status;
-                    if($updated_status=='Progetto in corso')
+                    if(($updated_status=='Progetto in corso')||($updated_status=='Ordine materiale'))
                     {
                         $fields['sync_project']='Si';
                     }
@@ -1069,14 +1069,14 @@ class Rest_controller extends CI_Controller {
                     
                 }
             }
-            $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
+            
             
                     
             // aggiornamento dealline
             echo "Righe dettaglio:<br/>";
-            $deal_lines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid_deal'");
+            $deal_lines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid_deal' AND deleted_='N'");
             $deal_price=0;
-            $deal_cost_expectd=0;
+            $deal_cost_expected=0;
             $deal_cost_actual=0;
             $deal_margin_expected=0;
             $deal_margin_actual=0;
@@ -1106,6 +1106,7 @@ class Rest_controller extends CI_Controller {
                 $margin_actual=$deal_line['margin_actual'];
 
                 $deal_line['expectedmargin']=$price-$expectedcost;
+                
 
                 if(isempty($quantity_actual))
                 {
@@ -1122,7 +1123,25 @@ class Rest_controller extends CI_Controller {
                 $deal_line['recordidproject_']=$recordid_project;
                 $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid_dealline'");
                 echo "UPDATED $recordid_dealline <br/>";
+                
+                
+                $deal_price=$deal_price+$price;
+                $deal_cost_expected=$deal_cost_expected+$expectedcost;
+                $deal_margin_expected=$deal_price-$deal_cost_expected;
+                
+                $deal_cost_actual=$deal_cost_actual+$cost_actual;
+                $deal_margin_actual=$deal_price-$deal_cost_actual;
+                
             }
+            
+            
+            
+            $fields['amount']=$deal_price;
+            $fields['expectedcost']=$deal_cost_expected;
+            $fields['expectedmargin']=$deal_margin_expected;
+            $fields['actualcost']=$deal_cost_actual;
+            $fields['effectivemargin']=$deal_margin_actual;
+            $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
             echo "<br/><br/>";
         }
         
