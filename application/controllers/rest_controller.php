@@ -1080,56 +1080,47 @@ class Rest_controller extends CI_Controller {
             $deal_cost_actual=0;
             $deal_margin_expected=0;
             $deal_margin_actual=0;
+            
             foreach ($deal_lines as $key => $deal_line) {
                 $recordid_dealline=$deal_line['recordid_'];
                 $dealline_name=$deal_line['name'];
                 echo "$dealline_name <br/>";
-                $uniteffectivecost=0;
+                $dealline_price=$deal_line['price'];
+                $dealline_quantity=$deal_line['quantity'];
+                $dealline_expectedmargin=$deal_line['expectedmargin'];
+                
+                
+                $dealline_uniteffectivecost=0;
                 $stmt = sqlsrv_query($conn, "SELECT * FROM VA1029 WHERE F1062='$recordid_dealline' AND FENA=-1");
                 while($row = sqlsrv_fetch_array($stmt)) {
                     if($row!=null)
                     {
-                        $uniteffectivecost=$row['F1043'];
+                        $dealline_uniteffectivecost=$row['F1043'];
                     }
                 }
-                echo "Costo unitario effettivo: $uniteffectivecost<br/>";
-                $price=$deal_line['price'];
-                $quantity=$deal_line['quantity'];
-                $unitexpectedcost=$deal_line['unitexpectedcost'];
-                $expectedcost=$deal_line['expectedcost'];
-                $expectedmargin=$deal_line['expectedmargin'];
-                $effectivecost=$deal_line['effectivecost'];
-                $quantity_actual=$deal_line['quantity_actual'];
-                $quantity_difference=$deal_line['quantity_difference'];
-                $price_actual=$deal_line['price_actual'];
-                $price_difference=$deal_line['price_difference'];
-                $margin_actual=$deal_line['margin_actual'];
+                echo "Costo unitario effettivo: $dealline_uniteffectivecost<br/>";
+                $deal_line['uniteffectivecost']=$dealline_uniteffectivecost;
+                
+                $dealline_effectivecost=$dealline_uniteffectivecost*$dealline_quantity;
+                $deal_line['effectivecost']=$dealline_effectivecost;
 
-                $deal_line['expectedmargin']=$price-$expectedcost;
-                
-                $deal_price=$deal_price+$price;
-                $deal_cost_expected=$deal_cost_expected+$expectedcost;
-                $deal_margin_expected=$deal_price-$deal_cost_expected;
-                
-                if(isnotempty($uniteffectivecost))
+                if($dealline_effectivecost!=0)
                 {
-                    $cost_actual=$uniteffectivecost*$quantity;
-                    if(isnotempty($quantity_actual))
-                    {
-                       $cost_actual=$uniteffectivecost*$quantity_actual;
-                    }
-                    $deal_line['uniteffectivecost']=$uniteffectivecost;
-                    $deal_line['effectivecost']=$cost_actual;
-                    $deal_line['margin_actual']=$price-$cost_actual;  
-                    $deal_cost_actual=$deal_cost_actual+$cost_actual;
-                    $deal_margin_actual=$deal_price-$deal_cost_actual;
+                    $dealline_margin_actual=$dealline_price-$dealline_effectivecost;
                 }
                 else
                 {
-                    $deal_line['margin_actual']= 
-                    $deal_margin_actual=$deal_price+$price-$expectedcost;
+                    $dealline_margin_actual=$dealline_expectedmargin;
                 }
                 
+
+                $deal_line['margin_actual']=$dealline_margin_actual;
+                
+                $deal_price=$deal_price+$dealline_price;
+                $deal_cost_actual=$deal_cost_actual+$dealline_effectivecost;
+                $deal_margin_actual=$deal_margin_actual+$dealline_margin_actual;
+                
+                  
                 $deal_line['recordidproject_']=$recordid_project;
                 $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid_dealline'");
                 echo "UPDATED $recordid_dealline <br/>";
