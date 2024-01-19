@@ -1025,11 +1025,16 @@ class Rest_controller extends CI_Controller {
         $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
         $conn = sqlsrv_connect( $serverName, $connectionInfo); 
         
-        $deals= $this->Sys_model->db_get("user_deal","*","syncstatus='Si' OR id>1516","ORDER BY recordid_ desc");
+        $deals= $this->Sys_model->db_get("user_deal","*","sync_adiuto='Si'","ORDER BY recordid_ desc");
         foreach ($deals as $key => $deal) {
             $fields=array();
             echo $deal['id']." - ".$deal['dealname']."<br/>";
             $recordid_deal=$deal['recordid_'];
+            $recordid_project=$this->Sys_model->db_get_value("user_project","recordid_","recordiddeal_='$recordid_deal'");
+            if(isempty($recordid_project))
+            {
+                $recordid_project='';
+            }
             $hubspot_dealuser=$deal['dealuser'];
             $type=$deal['type'];
             $hubspot_id=$deal['hubspot_id'];
@@ -1054,7 +1059,11 @@ class Rest_controller extends CI_Controller {
                     }
                     
                     $fields['dealstage']=$updated_status;
-                    $recordid_project=$this->Sys_model->db_get_value("user_project","recordid_","recordiddeal_='$recordid_deal'");
+                    if($updated_status=='Progetto in corso')
+                    {
+                        $fields['sync_project']='Si';
+                    }
+                    
                     echo "<b>".$updated_status."</b><br/>";
                     
                     
@@ -1109,7 +1118,8 @@ class Rest_controller extends CI_Controller {
                 }
                 $deal_line['uniteffectivecost']=$uniteffectivecost;
                 $deal_line['effectivecost']=$cost_actual;
-                $deal_line['margin_actual']=$price-$cost_actual;               
+                $deal_line['margin_actual']=$price-$cost_actual;  
+                $deal_line['recordidproject_']=$recordid_project;
                 $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid_dealline'");
                 echo "UPDATED $recordid_dealline <br/>";
             }

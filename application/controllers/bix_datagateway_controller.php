@@ -180,15 +180,7 @@ class Bix_datagateway_controller extends CI_Controller {
     {
         
         $sync_type= $this->db_get_value('sys_table', 'sync_type', "id='$tableid'");
-        
-        if($sync_field=='recordid_')
-        {
-           $origin_key_value='recordid_'; 
-        }
-        else
-        {
-            $origin_key_value=$fields[$sync_field_bixdata];
-        }
+        $origin_key_value=$fields[$sync_field_bixdata];
         echo "<b>Log: inizio sync_record su sql con sync filed $origin_key_value: ".date('Y-m-d H:i:s')."</b><br/>";
         $bixdata_row= $this->db_get_row('user_'.$tableid,'*',"$sync_field_bixdata='$origin_key_value'");
         echo $sync_type."<br/>";
@@ -607,15 +599,7 @@ class Bix_datagateway_controller extends CI_Controller {
             echo "<br/>";
             echo "SYNC FIELD <br/>";
             echo $sync_field."<br/>";
-            if($sync_field=='recordid_')
-            {
-               $sync_field_bixdata='recordid_'; 
-            }
-            else
-            {
-                $sync_field_bixdata=$bixdata_fields[$sync_field];
-            }
-            
+            $sync_field_bixdata=$bixdata_fields[$sync_field];
             echo "SYNC FIELD BIXDATA <br/>";
             echo $sync_field_bixdata."<br/>";
            
