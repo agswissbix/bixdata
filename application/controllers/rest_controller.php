@@ -1025,7 +1025,7 @@ class Rest_controller extends CI_Controller {
         $connectionInfo = array( "Database"=>"adibix_data", "UID"=>"sa", "PWD"=>"SB.s.s.21");
         $conn = sqlsrv_connect( $serverName, $connectionInfo); 
         
-        $deals= $this->Sys_model->db_get("user_deal","*","sync_adiuto='Si' and dealstatus='Vinta'","ORDER BY recordid_ desc");
+        $deals= $this->Sys_model->db_get("user_deal","*","sync_adiuto='Si' ","ORDER BY recordid_ desc");
         foreach ($deals as $key => $deal) {
             $fields=array();
             echo $deal['id']." - ".$deal['dealname']."<br/>";
@@ -1107,7 +1107,10 @@ class Rest_controller extends CI_Controller {
 
                 $deal_line['expectedmargin']=$price-$expectedcost;
                 
-                $cost_actual=$expectedcost;
+                $deal_price=$deal_price+$price;
+                $deal_cost_expected=$deal_cost_expected+$expectedcost;
+                $deal_margin_expected=$deal_price-$deal_cost_expected;
+                
                 if(isnotempty($uniteffectivecost))
                 {
                     $cost_actual=$uniteffectivecost*$quantity;
@@ -1115,21 +1118,26 @@ class Rest_controller extends CI_Controller {
                     {
                        $cost_actual=$uniteffectivecost*$quantity_actual;
                     }
+                    $deal_line['uniteffectivecost']=$uniteffectivecost;
+                    $deal_line['effectivecost']=$cost_actual;
+                    $deal_line['margin_actual']=$price-$cost_actual;  
+                    $deal_cost_actual=$deal_cost_actual+$cost_actual;
+                    $deal_margin_actual=$deal_price-$deal_cost_actual;
                 }
-                $deal_line['uniteffectivecost']=$uniteffectivecost;
-                $deal_line['effectivecost']=$cost_actual;
-                $deal_line['margin_actual']=$price-$cost_actual;  
+                else
+                {
+                    $deal_line['margin_actual']= 
+                    $deal_margin_actual=$deal_price+$price-$expectedcost;
+                }
+                
                 $deal_line['recordidproject_']=$recordid_project;
                 $this->Sys_model->update_record("dealline",1,$deal_line,"recordid_='$recordid_dealline'");
                 echo "UPDATED $recordid_dealline <br/>";
                 
                 
-                $deal_price=$deal_price+$price;
-                $deal_cost_expected=$deal_cost_expected+$expectedcost;
-                $deal_margin_expected=$deal_price-$deal_cost_expected;
                 
-                $deal_cost_actual=$deal_cost_actual+$cost_actual;
-                $deal_margin_actual=$deal_price-$deal_cost_actual;
+                
+                
                 
             }
             
