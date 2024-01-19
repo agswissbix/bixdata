@@ -10464,6 +10464,7 @@ class Sys_model extends CI_Model {
       if($keyfield_condition=='')
           $keyfield_condition='true';
       
+      $keyfield_condition=$keyfield_condition." AND deleted_='N'";
       
       if($term=="sys_recent")
       {
