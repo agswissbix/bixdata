@@ -1137,7 +1137,7 @@ class Rest_controller extends CI_Controller {
             $fields['amount']=$deal_price;
             $fields['actualcost']=$deal_cost_actual;
             $fields['effectivemargin']=$deal_margin_actual;
-            $fields['margindifference']=$deal_margin_actual-$fields['expectedmargin'];
+            $fields['margindifference']=$deal_margin_actual-$deal['expectedmargin'];
             $this->Sys_model->update_record('deal',1,$fields,"recordid_='$recordid_deal'");
             echo "<br/><br/>";
         }
