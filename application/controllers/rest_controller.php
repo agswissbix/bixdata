@@ -931,7 +931,7 @@ class Rest_controller extends CI_Controller {
                 $product_fixedprice=$this->Sys_model->db_get_value("user_product","fixedprice","recordid_='$recordid_product' AND deleted_='N'");
                 if(isnotempty($product_fixedprice))
                 {
-                    if($product_fixedprice['fixedprice']=='Si')
+                    if($product_fixedprice=='Si')
                     {
                         $fields['fixedprice']='Si';
                     }
