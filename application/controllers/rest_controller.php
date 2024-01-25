@@ -18,6 +18,16 @@ class Rest_controller extends CI_Controller {
         $post=$_POST;
         $table=$post['tableid'];
         $searchTerm=$post['searchTerm'];
+        $filters=array();
+        if(array_key_exists('filters', $post))
+        {
+            if(isnotempty($filters))
+            {
+               $filters=json_decode($filters, true); 
+            }
+        }
+        
+        
         $viewid=$post['viewid'];
         $currentpage=$post['currentpage'];
         $userid=$post['userid'];
@@ -137,6 +147,9 @@ class Rest_controller extends CI_Controller {
                 $order_ascdesc=$view['order_ascdesc'];
             }
         }
+        
+        
+    
         
         $sql=$sql." $from WHERE $where  AND user_$table.deleted_<>'Y' ) AS risultati  ";
         $limit=50;
