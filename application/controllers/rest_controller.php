@@ -562,74 +562,77 @@ class Rest_controller extends CI_Controller {
 
 
             
-            if($invoiceoption=='To check')
+            if($invoicestatus=='To Process')
             {
-                $invoicestatus='To check';
-            }
+                if($invoiceoption=='To check')
+                {
+                    $invoicestatus='To check';
+                }
 
-            if($invoiceoption=='Swisscom incident')
-            {
-                $invoicestatus='Swisscom incident';
-                $workprice=0;
-                $travelprice=0;
-            }
+                if($invoiceoption=='Swisscom incident')
+                {
+                    $invoicestatus='Swisscom incident';
+                    $workprice=0;
+                    $travelprice=0;
+                }
 
-            if($invoiceoption=='Mauro incident')
-            {
-                $invoicestatus='Mauro incident';
-            }
+                if($invoiceoption=='Mauro incident')
+                {
+                    $invoicestatus='Mauro incident';
+                }
 
-            if($invoiceoption=='Under Warranty')
-            {
-                $invoicestatus='Under warranty';
-            }
+                if($invoiceoption=='Under Warranty')
+                {
+                    $invoicestatus='Under warranty';
+                }
 
-            if($invoiceoption=='Commercial support')
-            {
-                $invoicestatus='Commercial support';
-            }
+                if($invoiceoption=='Commercial support')
+                {
+                    $invoicestatus='Commercial support';
+                }
 
-            if($invoiceoption=='Swisscom ServiceNow')
-            {
-                $invoicestatus='Swisscom ServiceNow';
-                
-            }
-            
-            if($invoiceoption=='Out of contract')
-            {
-                $invoicestatus='Out of contract';
-            }
-            
-            
-                
-            if($service=='Amministrazione')
-            {
-                $invoicestatus='Amministrazione';
-            }
-            
-            if($service=='Commerciale')
-            {
-                $invoicestatus='Commerciale';
-            }
+                if($invoiceoption=='Swisscom ServiceNow')
+                {
+                    $invoicestatus='Swisscom ServiceNow';
 
-            if($service=='Riunione')
-            {
-                $invoicestatus='Riunione';
-            }
+                }
 
-            if($service=='Interno')
-            {
-                $invoicestatus='Interno';
-            }
+                if($invoiceoption=='Out of contract')
+                {
+                    $invoicestatus='Out of contract';
+                }
 
-            if($service=='Formazione e Test')
-            {
-                $invoicestatus='Formazione e Test';
-            }
 
-            if($service=='Formazione Apprendista')
-            {
-                $invoicestatus='Formazione Apprendista';
+
+                if($service=='Amministrazione')
+                {
+                    $invoicestatus='Amministrazione';
+                }
+
+                if($service=='Commerciale')
+                {
+                    $invoicestatus='Commerciale';
+                }
+
+                if($service=='Riunione')
+                {
+                    $invoicestatus='Riunione';
+                }
+
+                if($service=='Interno')
+                {
+                    $invoicestatus='Interno';
+                }
+
+                if($service=='Formazione e Test')
+                {
+                    $invoicestatus='Formazione e Test';
+                }
+
+                if($service=='Formazione Apprendista')
+                {
+                    $invoicestatus='Formazione Apprendista';
+                }
             }
 
             
