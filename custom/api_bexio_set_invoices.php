@@ -92,7 +92,7 @@ $conn = connection();
                 }
                 if($type=='Travel')
                 {
-                    $position['tax_id']="16";
+                    $position['tax_id']="39";
                     $position['account_id']="324";  
                     $position['unit_id']=2;
                     $position['amount']=1;
@@ -103,7 +103,7 @@ $conn = connection();
                 {
                     
                     $count=$invoice_row['count'];
-                    $position['tax_id']="16";
+                    $position['tax_id']="39";
                     $position['account_id']=149;  
                     $position['unit_id']=2;
                     $position['amount']=$invoice_row['quantity'];
