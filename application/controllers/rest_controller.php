@@ -131,6 +131,11 @@ class Rest_controller extends CI_Controller {
             $order_field='opendate';
             $order_ascdesc='desc';
         }
+        if($table=='projectmilestone')
+        {
+            $order_field='expecteddate';
+            $order_ascdesc='asc';
+        }
         
         if($view!=null)
         {
