@@ -823,6 +823,11 @@ class Rest_controller extends CI_Controller {
                 $fields['validated']='';
             }
             
+            if(isnotempty($recordid_project))
+            {
+                $this->custom_update('project', $recordid_project);
+            }
+            
             
         }
         
@@ -832,9 +837,8 @@ class Rest_controller extends CI_Controller {
         {
             $completed=$row['completed'];
             $recordid_deal=$row['recordiddeal_'];
-            $fields_deal=array();
+            $fieldsupdate_deal=array();
             $usedhours=0;
-            
             
             // aggiornamento ore totali in base ai timesheet
             $timesheets= $this->Sys_model->db_get("user_timesheet","*","recordidproject_='$recordid'");
@@ -842,11 +846,12 @@ class Rest_controller extends CI_Controller {
                 $usedhours=$usedhours+$timesheet['totaltime_decimal'];
             }
             $fields['usedhours']=$usedhours;
-            $fields_deal['usedhours']=$usedhours;
+            $fieldsupdate_deal['usedhours']=$usedhours;
 
             // aggiornamento del relativo deal con lo stato completed
-            $fields_deal['projectcompleted']=$completed;
-            $this->Sys_model->update_record("deal",1,$fields_deal,"recordid_='$recordid_deal'");
+            $fieldsupdate_deal['projectcompleted']=$completed;
+            $this->Sys_model->update_record("deal",1,$fieldsupdate_deal,"recordid_='$recordid_deal'");
+            $this->custom_update('deal', $recordid_deal);
         }
         
         
@@ -929,14 +934,11 @@ class Rest_controller extends CI_Controller {
 //------DEAL---------------------------------------------------------------------------------------------
         if($tableid=='deal')
         {
+            //data creazione trattativa
+            $creationdate=$this->Sys_model->db_get_value("user_deal","creation_","recordid_='$recordid'");
+            $fields['opendate']=date("Y-m-d", strtotime($creationdate));
             
-            // data apertura
-            if(true)
-            {
-                $creationdate=$this->Sys_model->db_get_value("user_deal","creation_","recordid_='$recordid'");
-                $fields['opendate']=date("Y-m-d", strtotime($creationdate));
-            }
-            
+            //venditore trattativa con aggiornamento del venditore per adiuto
             $dealuser1=$row['dealuser1'];
             $bixdata_dealuser= $this->Sys_model->db_get_row("sys_user","*","id='$dealuser1'"); 
             if($bixdata_dealuser!=null)
@@ -944,114 +946,110 @@ class Rest_controller extends CI_Controller {
                 $fields['adiuto_dealuser']=$bixdata_dealuser['adiutoid'];
             }
             
+            //eventuale progetto da associare alle righe di dettaglio
             $recordid_project=$this->Sys_model->db_get_value("user_project","recordid_","recordiddeal_='$recordid'");
             if(isempty($recordid_project))
             {
                 $recordid_project='';
             }
             
-           
-           
-            $deal_amount=$row['amount'];
-            $calc_amount=0;
-            $expectedcost=0;
-            $deal_cost_actual=0;
-            $deal_margin_actual=0;
+            //importo che potrebbe essere impostato anche senza righe di dettaglio
+            $deal_price=$row['amount'];
+            $deal_price_sum=0;
             $deal_expectedcost=$row['expectedcost'];
-            $deal_usedhours=$row['usedhours'];
-            $calc_expectedcost=0;
-            $fields['fixedprice']='No';
+            $deal_expectedcost_sum=0;
+            $deal_actualcost=0;
             $deal_expectedhours=0;
+            $deal_usedhours=$row['usedhours'];
+            $deal_expectedmargin=0;
+            $deal_actualmargin=0;
+            
+            $fields['fixedprice']='No';
             // aggiornamento prezzo costo e margine totale
             $deallines= $this->Sys_model->db_get("user_dealline","*","recordiddeal_='$recordid' AND deleted_='N'");
             foreach ($deallines as $key => $dealline) {
                 $recordid_dealline=$dealline['recordid_'];
                 $recordid_product=$dealline['recordidproduct_'];
-                $dealline_price=$dealline['price'];
                 $dealline_quantity=$dealline['quantity'];
-                $dealline_expectedcost=$dealline['expectedmargin'];
-                $dealline_uniteffectivecost=$dealline['uniteffectivecost'];
+                $dealline_price=$dealline['price'];
+                $dealline_expectedcost=$dealline['expectedcost'];
                 $dealline_expectedmargin=$dealline['expectedmargin'];
-                
-                $calc_amount=$calc_amount+$dealline_price;
-                $calc_expectedcost=$calc_expectedcost+$dealline_expectedcost;
+                $dealline_unitactualcost=$dealline['uniteffectivecost'];
                 
                 
-                $fields_dealline=array();
-                $fields_dealline['recordidproject_']=$recordid_project;
+                $deal_price_sum=$deal_price_sum+$dealline_price;
+                $deal_expectedcost_sum=$deal_expectedcost_sum+$dealline_expectedcost;
+                
+                
+                $fieldsupdate_dealline=array();
+                $fieldsupdate_dealline['recordidproject_']=$recordid_project;
               
+                
+                $dealline_actualcost=$dealline_unitactualcost*$dealline_quantity;
+                
                 $product_fixedprice=$this->Sys_model->db_get_value("user_product","fixedprice","recordid_='$recordid_product' AND deleted_='N'");
+                $deal_expectedhours=$deal_expectedhours+$dealline['expectedhours'];
                 if($product_fixedprice=='Si')
                 {
                     $fields['fixedprice']='Si';
-                    $deal_expectedhours=$deal_expectedhours+floor($dealline['price']/60);
-                    // update used hours
+                    
+                    if(isempty($dealline['expectedhours']))
+                    {
+                        $fieldsupdate_dealline['expectedhours']=$dealline_price/140;
+                    }
+                    
                     if($deal_usedhours!=0)
                     {
-                        $fields_dealline['usedhours']=$deal_usedhours;
-                        $fields_dealline['effectivecost']=$deal_usedhours*60;
+                        $fieldsupdate_dealline['usedhours']=$deal_usedhours;
+                        $dealline_actualcost=$deal_usedhours*60;
+                        //lo azzero perchè le ore usate sul progetto vengano messe solo su una riga che prevede ore lavoro
                         $deal_usedhours=0;
                        
                     }
 
                 }
                 
-                
-                
-                $dealline_effectivecost=$dealline_uniteffectivecost*$dealline_quantity;
-                $deal_line['effectivecost']=$dealline_effectivecost;
-
-                if($dealline_effectivecost!=0)
+                if($dealline_actualcost!=0)
                 {
-                    $dealline_margin_actual=$dealline_price-$dealline_effectivecost;
+                    $dealline_actualmargin=$dealline_price-$dealline_actualcost;
                 }
                 else
                 {
-                    $dealline_margin_actual=$dealline_expectedmargin;
+                    $dealline_actualmargin=$dealline_expectedmargin;
                 }
                 
+                $fieldsupdate_dealline['effectivecost']=$dealline_actualcost;
+                $fieldsupdate_dealline['margin_actual']=$dealline_actualmargin;
+                $this->Sys_model->update_record("dealline",1,$fieldsupdate_dealline,"recordid_='$recordid_dealline'");
+                
+                
+                $deal_actualcost=$deal_actualcost+$dealline_actualcost;
+                $deal_actualmargin=$deal_actualmargin+$dealline_actualmargin;
 
-                $deal_line['margin_actual']=$dealline_margin_actual;
-                
-                $deal_cost_actual=$deal_cost_actual+$dealline_effectivecost;
-                $deal_margin_actual=$deal_margin_actual+$dealline_margin_actual;
-                
-                    
-                $this->Sys_model->update_record("dealline",1,$fields_dealline,"recordid_='$recordid_dealline'");
-                
-                
             }   
             
             // fine aggiornamento righe dettaglio
             
-            if($calc_amount==0)
+            if($deal_price_sum!=0)
             {
-               $amount= $deal_amount;
+               $deal_price=$deal_price_sum;
             }
-            else
+            if($deal_expectedcost_sum!=0)
             {
-                $amount=$calc_amount;
+               $deal_expectedcost=$deal_expectedcost_sum;
             }
-            if($calc_expectedcost==0)
+            $deal_expectedmargin=$deal_price-$deal_expectedcost;
+            if($deal_actualcost==0)
             {
-               $expectedcost= $deal_expectedcost;
+               $deal_actualmargin= $deal_expectedmargin;
             }
-            else
-            {
-                $expectedcost=$calc_expectedcost;
-            }
-            $expectedmargin=$amount-$expectedcost;
-            
-            
-            
-            
-            $fields['amount']=sprintf("%.2f", $amount);
-            $fields['expectedcost']=sprintf("%.2f", $expectedcost);
-            $fields['expectedmargin']= sprintf("%.2f", $expectedmargin);
+            $fields['amount']=sprintf("%.2f", $deal_price);
+            $fields['expectedcost']=sprintf("%.2f", $deal_expectedcost);
+            $fields['expectedmargin']= sprintf("%.2f", $deal_expectedmargin);
             $fields['expectedhours']=$deal_expectedhours;
-            $fields['actualcost']=$deal_cost_actual;
-            $fields['effectivemargin']=$deal_margin_actual;
-            $fields['margindifference']=$deal_margin_actual-$expectedmargin;
+            $fields['actualcost']=$deal_actualcost;
+            $fields['effectivemargin']=$deal_actualmargin;
+            $fields['margindifference']=$deal_actualmargin-$deal_expectedmargin;
         }
         
         
