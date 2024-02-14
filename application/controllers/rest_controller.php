@@ -963,6 +963,9 @@ class Rest_controller extends CI_Controller {
             $deal_usedhours=$row['usedhours'];
             $deal_expectedmargin=0;
             $deal_actualmargin=0;
+            $deal_annualprice=0;
+            $deal_annualcost=0;
+            $deal_annualmargin=0;
             
             $fields['fixedprice']='No';
             // aggiornamento prezzo costo e margine totale
@@ -975,8 +978,19 @@ class Rest_controller extends CI_Controller {
                 $dealline_expectedcost=$dealline['expectedcost'];
                 $dealline_expectedmargin=$dealline['expectedmargin'];
                 $dealline_unitactualcost=$dealline['uniteffectivecost'];
-                
-                
+                $dealline_frequency=$dealline['frequency'];
+                $multiplier=1;
+                if($dealline_frequency=='Annuale')
+                    $multiplier=1;
+                if($dealline_frequency=='Semestrale')
+                    $multiplier=2;
+                if($dealline_frequency=='Trimestrale')
+                    $multiplier=3;
+                if($dealline_frequency=='Bimestrale')
+                    $multiplier=6;
+                if($dealline_frequency=='Mensile')
+                    $multiplier=12;
+                        
                 $deal_price_sum=$deal_price_sum+$dealline_price;
                 $deal_expectedcost_sum=$deal_expectedcost_sum+$dealline_expectedcost;
                 
@@ -1020,12 +1034,35 @@ class Rest_controller extends CI_Controller {
                 
                 $fieldsupdate_dealline['effectivecost']=$dealline_actualcost;
                 $fieldsupdate_dealline['margin_actual']=$dealline_actualmargin;
+                
+                if(isnotempty($dealline_frequency))
+                {
+                    $fieldsupdate_dealline['annualprice']=$dealline_price*$multiplier;
+                    if($dealline_actualcost!=0)
+                    {
+                        $fieldsupdate_dealline['annualcost']=$dealline_actualcost*$multiplier;
+                    }
+                    else
+                    {
+                        $fieldsupdate_dealline['annualcost']=$dealline_expectedcost*$multiplier;
+                    }
+                    
+                    $fieldsupdate_dealline['annualmargin']=$fieldsupdate_dealline['annualprice']-$fieldsupdate_dealline['annualcost'];
+                    
+                    $deal_annualprice=$deal_annualprice+$fieldsupdate_dealline['annualprice'];
+                    $deal_annualcost=$deal_annualcost+$fieldsupdate_dealline['annualcost'];
+                    $deal_annualmargin=$deal_annualmargin+$fieldsupdate_dealline['annualmargin'];
+                }
+                
+                
                 $this->Sys_model->update_record("dealline",1,$fieldsupdate_dealline,"recordid_='$recordid_dealline'");
                 
                 
                 $deal_actualcost=$deal_actualcost+$dealline_actualcost;
                 $deal_actualmargin=$deal_actualmargin+$dealline_actualmargin;
 
+                
+                
             }   
             
             // fine aggiornamento righe dettaglio
@@ -1050,6 +1087,9 @@ class Rest_controller extends CI_Controller {
             $fields['actualcost']=$deal_actualcost;
             $fields['effectivemargin']=$deal_actualmargin;
             $fields['margindifference']=$deal_actualmargin-$deal_expectedmargin;
+            $fields['annualprice']=$deal_annualprice;
+            $fields['annualcost']=$deal_annualcost;
+            $fields['annualmargin']=$deal_annualmargin;
         }
         
         
