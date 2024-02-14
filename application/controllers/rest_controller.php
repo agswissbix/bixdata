@@ -955,6 +955,8 @@ class Rest_controller extends CI_Controller {
             $deal_amount=$row['amount'];
             $calc_amount=0;
             $expectedcost=0;
+            $deal_cost_actual=0;
+            $deal_margin_actual=0;
             $deal_expectedcost=$row['expectedcost'];
             $deal_usedhours=$row['usedhours'];
             $calc_expectedcost=0;
