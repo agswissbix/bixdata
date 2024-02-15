@@ -10324,6 +10324,12 @@ class Sys_model extends CI_Model {
            $recordid_dipendente= $this->db_get_value('user_presenzemensili','recordiddipendenti_',"recordid_='$recordid'");
            $insert_values=$insert_values.",'$recordid_dipendente'";
         }
+        
+        //seriale id
+        $insert_fields=$insert_fields.",id"; 
+        $id_value=  $this->generate_seriale($tableid, $fieldid);
+        $insert_values=$insert_values.",$id_value";
+        
         $insert_fields=$insert_fields.")";
         $insert_values=$insert_values.")";
         $sql=$insert." ".$insert_fields." ".$insert_values;
