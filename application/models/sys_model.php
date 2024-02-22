@@ -10489,7 +10489,7 @@ class Sys_model extends CI_Model {
              {
                  $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfield_condition ORDER BY priorityid desc,name asc LIMIT 30";
              }
-             if($mastertableid=='compansdfy')
+             if($mastertableid=='company')
              {
                  $sql="SELECT recordid_,$keyfieldlink FROM user_$mastertableid WHERE $keyfield_condition AND ((bexio_status!='Deleted' AND bexio_contact_type_id!='2') OR id_bexio is null) ORDER BY recordid_ desc LIMIT 20";
              }
