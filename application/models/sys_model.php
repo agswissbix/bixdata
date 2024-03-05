@@ -2693,11 +2693,22 @@ class Sys_model extends CI_Model {
        public function get_colums($idarchivio,$idutente)
     {
         $colums=array();
-        $preference_columns=  $this->LoadPreferencesNewVersion($idarchivio, $idutente, 'risultatiricerca');
+        $sql="SELECT sys_field.*,sys_field.fieldid,sys_field.description,sys_field.fieldtypeid,sys_field.lookupcodedesc,sys_field.lookuptableid,sys_field.tableid,sys_field.tablelink,sys_field.label,sys_field.sublabel
+              FROM sys_user_field_order INNER JOIN sys_field
+                        ON sys_user_field_order.fieldid=sys_field.id
+              WHERE sys_field.tableid='$idarchivio' AND sys_user_field_order.tableid='$idarchivio' AND typepreference='search_results_fields' AND userid=1
+              ORDER BY sys_user_field_order.fieldorder";
+        
+        $preference_columns=$this->select($sql);
         if(sizeof($preference_columns)==0)
         {
-            $preference_columns=  $this->LoadPreferencesNewVersion($idarchivio, 1, 'risultatiricerca');
+            $preference_columns=  $this->LoadPreferencesNewVersion($idarchivio, $idutente, 'risultatiricerca');
+            if(sizeof($preference_columns)==0)
+            {
+                $preference_columns=  $this->LoadPreferencesNewVersion($idarchivio, 1, 'risultatiricerca');
+            }
         }
+        
         $column['id']='recordid_';
         $column['desc']='recordid_';
         $column['fieldtypeid']='Sys';
@@ -2833,14 +2844,37 @@ class Sys_model extends CI_Model {
         return $colums;
     }
     
-    public function get_results_columns($idarchivio,$idutente)
+    public function get_results_columns($idarchivio,$idutente, $mastertableid='')
     {
         $colums=array();
-        $preference_columns=  $this->LoadPreferencesNewVersion($idarchivio, $idutente, 'risultatiricerca');
+        if($mastertableid=='')
+        {
+            $sql="SELECT sys_field.*,sys_field.fieldid,sys_field.description,sys_field.fieldtypeid,sys_field.lookupcodedesc,sys_field.lookuptableid,sys_field.tableid,sys_field.tablelink,sys_field.label,sys_field.sublabel
+              FROM sys_user_field_order INNER JOIN sys_field
+                        ON sys_user_field_order.fieldid=sys_field.id
+              WHERE sys_field.tableid='$idarchivio' AND sys_user_field_order.tableid='$idarchivio' AND typepreference='search_results_fields' AND userid=1
+              ORDER BY sys_user_field_order.fieldorder";
+        }
+        else
+        {
+            $sql="SELECT sys_field.*,sys_field.fieldid,sys_field.description,sys_field.fieldtypeid,sys_field.lookupcodedesc,sys_field.lookuptableid,sys_field.tableid,sys_field.tablelink,sys_field.label,sys_field.sublabel
+              FROM sys_user_field_order INNER JOIN sys_field
+                        ON sys_user_field_order.fieldid=sys_field.id
+              WHERE sys_field.tableid='$idarchivio' AND sys_user_field_order.tableid='$idarchivio' AND typepreference='linked_columns' AND userid=1 AND master_tableid='$mastertableid'
+              ORDER BY sys_user_field_order.fieldorder";
+        }
+        
+        
+        $preference_columns=$this->select($sql);
         if(sizeof($preference_columns)==0)
         {
-            $preference_columns=  $this->LoadPreferencesNewVersion($idarchivio, 1, 'risultatiricerca');
+            $preference_columns=  $this->LoadPreferencesNewVersion($idarchivio, $idutente, 'risultatiricerca');
+            if(sizeof($preference_columns)==0)
+            {
+                $preference_columns=  $this->LoadPreferencesNewVersion($idarchivio, 1, 'risultatiricerca');
+            }
         }
+        
         $column['id']='recordid_';
         $column['desc']='recordid_';
         $column['fieldtypeid']='Sys';
@@ -3094,7 +3128,7 @@ class Sys_model extends CI_Model {
             $filledfields[$key]['param']='';
             $filledfields[$key]['operator']='';
             $fieldid=$emptyfield['fieldid'];
-            $filledfields[$key]['settings']=$this->get_field_settings($tableid,$fieldid);
+            $filledfields[$key]['settings']=$this->get_field_settings($tableid,$fieldid,null,$userid);
             $fieldtypeid=$emptyfield['fieldtypeid'];
             $lookuptableid=$emptyfield['lookuptableid'];
             /*if(($funzione=='inserimento')&&($this->isnotempty($emptyfield['default'])))

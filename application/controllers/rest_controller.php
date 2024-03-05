@@ -34,8 +34,13 @@ class Rest_controller extends CI_Controller {
         $from="FROM user_$table";
         $where='TRUE';
         
+        $master_tableid='';
+        if(array_key_exists("master_tableid", $post))
+        {
+            $master_tableid=$post['master_tableid'];
+        }
         
-        $columns=  $this->Sys_model->get_results_columns($table, 1);
+        $columns=  $this->Sys_model->get_results_columns($table, 1, $master_tableid);
         $return['columns']= $columns; 
         $sql="";
         $summary=array();
