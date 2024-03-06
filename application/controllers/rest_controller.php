@@ -511,29 +511,11 @@ class Rest_controller extends CI_Controller {
     
     
             $worktime=$row['worktime'];
-            $worktime_array=explode(":",$worktime);
-            $hours_decimal=(string)((int)($worktime_array[0]));
-            $minutes=$worktime_array[1];
-            $minutes_decimal='00';
-            if($minutes=='00')
-                    $minutes_decimal='00';
-            if($minutes=='15')
-                    $minutes_decimal='25';
-            if($minutes=='30')
-                    $minutes_decimal='50';
-            if($minutes=='45')
-                    $minutes_decimal='75';
-            $worktimedecimal=$hours_decimal.".".$minutes_decimal;
-            $fields['worktime_decimal']=$worktimedecimal;
-            
-            $traveltime=$row['traveltime'];
-            $traveltimedecimal=null;
-            $totaltimedecimal=null;
-            if(isnotempty($traveltime))
+            if(isnotempty($worktime))
             {
-                $traveltime_array=explode(":",$traveltime);
-                $hours_decimal=(string)((int)($traveltime_array[0]));
-                $minutes=$traveltime_array[1];
+                $worktime_array=explode(":",$worktime);
+                $hours_decimal=(string)((int)($worktime_array[0]));
+                $minutes=$worktime_array[1];
                 $minutes_decimal='00';
                 if($minutes=='00')
                         $minutes_decimal='00';
@@ -543,294 +525,315 @@ class Rest_controller extends CI_Controller {
                         $minutes_decimal='50';
                 if($minutes=='45')
                         $minutes_decimal='75';
-                $traveltimedecimal=$hours_decimal.".".$minutes_decimal;
-                $fields['traveltime_decimal']=$traveltimedecimal;
+                $worktimedecimal=$hours_decimal.".".$minutes_decimal;
+                $fields['worktime_decimal']=$worktimedecimal;
 
-                
-            }
-            $totaltimedecimal=$worktimedecimal+$traveltimedecimal;
-            $fields['totaltime_decimal']=$totaltimedecimal;
-            
-            
-            $invoicestatus=$row['invoicestatus'];
-            if($invoicestatus!='Invoiced')
-            {
-                $invoicestatus='To Process';
-            }
-            $fields['recordidservicecontract_']='';
-                
-            
-            
-            $workprice=0;
-            $travelprice=0;
-            $totalprice=0;
-            $fixedprice=$project['fixedprice'];
-            $unit_price=140;//$service['unit_price'];
-            $itpbx_price=$company['ictpbx_price'];
-            $sw_price=$company['sw_price'];
-            $account_travelprice=$company['travel_price'];
-
-
-            
-            if($invoicestatus=='To Process')
-            {
-                if($invoiceoption=='To check')
+                $traveltime=$row['traveltime'];
+                $traveltimedecimal=null;
+                $totaltimedecimal=null;
+                if(isnotempty($traveltime))
                 {
-                    $invoicestatus='To check';
-                }
+                    $traveltime_array=explode(":",$traveltime);
+                    $hours_decimal=(string)((int)($traveltime_array[0]));
+                    $minutes=$traveltime_array[1];
+                    $minutes_decimal='00';
+                    if($minutes=='00')
+                            $minutes_decimal='00';
+                    if($minutes=='15')
+                            $minutes_decimal='25';
+                    if($minutes=='30')
+                            $minutes_decimal='50';
+                    if($minutes=='45')
+                            $minutes_decimal='75';
+                    $traveltimedecimal=$hours_decimal.".".$minutes_decimal;
+                    $fields['traveltime_decimal']=$traveltimedecimal;
 
-                if($invoiceoption=='Swisscom incident')
-                {
-                    $invoicestatus='Swisscom incident';
-                    $workprice=0;
-                    $travelprice=0;
-                }
-
-                if($invoiceoption=='Mauro incident')
-                {
-                    $invoicestatus='Mauro incident';
-                }
-
-                if($invoiceoption=='Under Warranty')
-                {
-                    $invoicestatus='Under warranty';
-                }
-
-                if($invoiceoption=='Commercial support')
-                {
-                    $invoicestatus='Commercial support';
-                }
-
-                if($invoiceoption=='Swisscom ServiceNow')
-                {
-                    $invoicestatus='Swisscom ServiceNow';
 
                 }
+                $totaltimedecimal=$worktimedecimal+$traveltimedecimal;
+                $fields['totaltime_decimal']=$totaltimedecimal;
 
-                if($invoiceoption=='Out of contract')
+
+                $invoicestatus=$row['invoicestatus'];
+                if($invoicestatus!='Invoiced')
                 {
-                    $invoicestatus='Out of contract';
+                    $invoicestatus='To Process';
                 }
+                $fields['recordidservicecontract_']='';
 
 
 
-                if($service=='Amministrazione')
+                $workprice=0;
+                $travelprice=0;
+                $totalprice=0;
+                $fixedprice=$project['fixedprice'];
+                $unit_price=140;//$service['unit_price'];
+                $itpbx_price=$company['ictpbx_price'];
+                $sw_price=$company['sw_price'];
+                $account_travelprice=$company['travel_price'];
+
+
+
+                if($invoicestatus=='To Process')
                 {
-                    $invoicestatus='Amministrazione';
-                }
-
-                if($service=='Commerciale')
-                {
-                    $invoicestatus='Commerciale';
-                }
-
-                if($service=='Riunione')
-                {
-                    $invoicestatus='Riunione';
-                }
-
-                if($service=='Interno')
-                {
-                    $invoicestatus='Interno';
-                }
-
-                if($service=='Formazione e Test')
-                {
-                    $invoicestatus='Formazione e Test';
-                }
-
-                if($service=='Formazione Apprendista')
-                {
-                    $invoicestatus='Formazione Apprendista';
-                }
-            }
-
-            
-                
-                
-            
-
-            if($invoicestatus=='To Process')
-            {
-                if($project != null)
-                {
-                    if($fixedprice=='Si') 
+                    if($invoiceoption=='To check')
                     {
-                       $invoicestatus='Fixed price Project'; 
+                        $invoicestatus='To check';
+                    }
+
+                    if($invoiceoption=='Swisscom incident')
+                    {
+                        $invoicestatus='Swisscom incident';
+                        $workprice=0;
+                        $travelprice=0;
+                    }
+
+                    if($invoiceoption=='Mauro incident')
+                    {
+                        $invoicestatus='Mauro incident';
+                    }
+
+                    if($invoiceoption=='Under Warranty')
+                    {
+                        $invoicestatus='Under warranty';
+                    }
+
+                    if($invoiceoption=='Commercial support')
+                    {
+                        $invoicestatus='Commercial support';
+                    }
+
+                    if($invoiceoption=='Swisscom ServiceNow')
+                    {
+                        $invoicestatus='Swisscom ServiceNow';
+
+                    }
+
+                    if($invoiceoption=='Out of contract')
+                    {
+                        $invoicestatus='Out of contract';
+                    }
+
+
+
+                    if($service=='Amministrazione')
+                    {
+                        $invoicestatus='Amministrazione';
+                    }
+
+                    if($service=='Commerciale')
+                    {
+                        $invoicestatus='Commerciale';
+                    }
+
+                    if($service=='Riunione')
+                    {
+                        $invoicestatus='Riunione';
+                    }
+
+                    if($service=='Interno')
+                    {
+                        $invoicestatus='Interno';
+                    }
+
+                    if($service=='Formazione e Test')
+                    {
+                        $invoicestatus='Formazione e Test';
+                    }
+
+                    if($service=='Formazione Apprendista')
+                    {
+                        $invoicestatus='Formazione Apprendista';
                     }
                 }
-            }
 
-            if(($invoicestatus=='To Process'))
-            {
-                $servicecontract=null;
-                
-                    // cerca service contract
-                    if($service=='Assistenza IT')
+
+
+
+
+
+                if($invoicestatus=='To Process')
+                {
+                    if($project != null)
                     {
-                        if(isempty($traveltimedecimal)) 
+                        if($fixedprice=='Si') 
                         {
-                            // Cerca contratto be all all-inclusive
-                            $condition="recordidcompany_='$recordid_company' and  (type='BeAll (All-inclusive)') ";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'  AND deleted_='N'");
+                           $invoicestatus='Fixed price Project'; 
                         }
-         
                     }
+                }
 
-                    if($service=='Assistenza PBX')
-                    {
-                        if(isempty($traveltimedecimal)&&($totaltimedecimal==0.25))
-                        {
-                            //cerca contratto pbx
-                            $condition="recordidcompany_='$recordid_company' and (type='Manutenzione PBX') ";
-                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
-                        }
- 
+                if(($invoicestatus=='To Process'))
+                {
+                    $servicecontract=null;
 
-                    }
-
-                    if($service=='Assistenza SW')
-                    {
-                        $condition="recordidcompany_='$recordid_company' and (service='Assistenza SW' OR services like '%Software%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
-                    }
-
-                    //Hosting
-                    if($service=='Assistenza Web Hosting')
-                    {
-                        $condition="recordidcompany_='$recordid_company' and (service='Assistenza Web Hosting' OR services like '%Hosting%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
-                    }
-
-                    //Printing
-                    if($service=='Printing')
-                    {
-                        $condition="recordidcompany_='$recordid_company' and (service='Printing' OR services like '%Printing%' )";
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
-                    }
-                    
-                    
-                    
-                    if($servicecontract==null)
-                    {
-                        // Cerca contratto monte ore
+                        // cerca service contract
                         if($service=='Assistenza IT')
                         {
-                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza IT' OR services like '%ICT%' )  ";
+                            if(isempty($traveltimedecimal)) 
+                            {
+                                // Cerca contratto be all all-inclusive
+                                $condition="recordidcompany_='$recordid_company' and  (type='BeAll (All-inclusive)') ";
+                                $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress'  AND deleted_='N'");
+                            }
+
                         }
+
                         if($service=='Assistenza PBX')
                         {
-                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza PBX' OR services like '%PBX%' )  ";
-                        }
-                        
-                        $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (type='Monte Ore') and status='In Progress' AND deleted_='N'");
-                    }
-                    
-                    if($servicecontract != null)
-                    {
-                        $invoicestatus='Service Contract';
-                        $recordid_servicecontract=$servicecontract['recordid_'];
+                            if(isempty($traveltimedecimal)&&($totaltimedecimal==0.25))
+                            {
+                                //cerca contratto pbx
+                                $condition="recordidcompany_='$recordid_company' and (type='Manutenzione PBX') ";
+                                $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
+                            }
 
-                        $fields['recordidservicecontract_']=$recordid_servicecontract;
-                        $contracttype=$servicecontract['type'];
-                        if(($contracttype=='PBX')||($contracttype=='BeAll'))
+
+                        }
+
+                        if($service=='Assistenza SW')
                         {
-                            $invoicestatus='Flat Service Contract';
+                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza SW' OR services like '%Software%' )";
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
                         }
-                        
-                        $this->custom_update('servicecontract', $recordid_servicecontract);
 
-                    }
+                        //Hosting
+                        if($service=='Assistenza Web Hosting')
+                        {
+                            $condition="recordidcompany_='$recordid_company' and (service='Assistenza Web Hosting' OR services like '%Hosting%' )";
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
+                        }
 
-                
-               
+                        //Printing
+                        if($service=='Printing')
+                        {
+                            $condition="recordidcompany_='$recordid_company' and (service='Printing' OR services like '%Printing%' )";
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and status='In Progress' AND deleted_='N'");
+                        }
 
-                
-            }
 
-            if(($invoicestatus=='To Process')||($invoicestatus=='Out of contract'))
-            {
 
-                if(($service != null)&&($company != null))
+                        if($servicecontract==null)
+                        {
+                            // Cerca contratto monte ore
+                            if($service=='Assistenza IT')
+                            {
+                                $condition="recordidcompany_='$recordid_company' and (service='Assistenza IT' OR services like '%ICT%' )  ";
+                            }
+                            if($service=='Assistenza PBX')
+                            {
+                                $condition="recordidcompany_='$recordid_company' and (service='Assistenza PBX' OR services like '%PBX%' )  ";
+                            }
+
+                            $servicecontract=$this->Sys_model->db_get_row("user_servicecontract","*","$condition and (type='Monte Ore') and status='In Progress' AND deleted_='N'");
+                        }
+
+                        if($servicecontract != null)
+                        {
+                            $invoicestatus='Service Contract';
+                            $recordid_servicecontract=$servicecontract['recordid_'];
+
+                            $fields['recordidservicecontract_']=$recordid_servicecontract;
+                            $contracttype=$servicecontract['type'];
+                            if(($contracttype=='PBX')||($contracttype=='BeAll'))
+                            {
+                                $invoicestatus='Flat Service Contract';
+                            }
+
+                            $this->custom_update('servicecontract', $recordid_servicecontract);
+
+                        }
+
+
+
+
+
+                }
+
+                if(($invoicestatus=='To Process')||($invoicestatus=='Out of contract'))
                 {
 
-                    $invoicestatus='To Invoice';
-                    $fields['recordidservicecontract_']='';
-
-                    if(($service=='Assistenza SW' )&&(($sw_price != null)&& ($sw_price != '') &&($sw_price != 0)))
-                    {
-                       $unit_price=$sw_price;
-                    }
-
-                    if(($service=='Assistenza PBX' || $service=='Assistenza IT' )&&(($itpbx_price != null)&& ($itpbx_price != '') &&($itpbx_price != 0)))
-                    { 
-                       $unit_price=$itpbx_price;
-                    }
-
-                    if(!isEmpty($traveltimedecimal))
+                    if(($service != null)&&($company != null))
                     {
 
-                        if(isEmpty($account_travelprice))
+                        $invoicestatus='To Invoice';
+                        $fields['recordidservicecontract_']='';
+
+                        if(($service=='Assistenza SW' )&&(($sw_price != null)&& ($sw_price != '') &&($sw_price != 0)))
                         {
-                            $travelprice=$traveltimedecimal*$unit_price;
+                           $unit_price=$sw_price;
                         }
-                        else
+
+                        if(($service=='Assistenza PBX' || $service=='Assistenza IT' )&&(($itpbx_price != null)&& ($itpbx_price != '') &&($itpbx_price != 0)))
+                        { 
+                           $unit_price=$itpbx_price;
+                        }
+
+                        if(!isEmpty($traveltimedecimal))
                         {
-                            $travelprice=$account_travelprice;
+
+                            if(isEmpty($account_travelprice))
+                            {
+                                $travelprice=$traveltimedecimal*$unit_price;
+                            }
+                            else
+                            {
+                                $travelprice=$account_travelprice;
+                            }
+                        }
+
+                        $workprice=$unit_price*$worktimedecimal;
+                        $totalprice=$workprice+$travelprice;
+
+                        if(!isEmpty($ticket))
+                        {
+                            $ticket_status=$ticket['vtestatus'];
+                            if($ticket_status!='Closed')
+                            {
+                                $invoicestatus='To Invoice when Ticket Closed';
+                            }
+                        }
+
+                        if(!isEmpty($project))
+                        {
+                            $completed=$project['completed'];
+                            if($completed!='Si')
+                            {
+                                $invoicestatus='To Invoice when Project completed';
+                            }
                         }
                     }
-
-                    $workprice=$unit_price*$worktimedecimal;
-                    $totalprice=$workprice+$travelprice;
-
-                    if(!isEmpty($ticket))
+                    else
                     {
-                        $ticket_status=$ticket['vtestatus'];
-                        if($ticket_status!='Closed')
-                        {
-                            $invoicestatus='To Invoice when Ticket Closed';
-                        }
+                        $invoicestatus='To Check';
+                    }
+                }
+
+                $fields['invoicestatus']=$invoicestatus;
+                $fields['worktime_decimal']=$worktimedecimal;
+                $fields['workprice']=$workprice;
+                $fields['traveltime_decimal']=$traveltimedecimal;
+                $fields['travelprice']=$travelprice;
+                $fields['totaltime_decimal']=$totaltimedecimal;
+                $fields['totalprice']=$totalprice;
+
+                if(($service=='Assistenza IT')||($service=='Assistenza PBX')||($service=='Assistenza SW')||($service=='Assistenza Web Hosting')||($service=='Printing'))
+                {
+                    if($row['validated']!='Si')
+                    {
+                        $fields['validated']='No';
                     }
 
-                    if(!isEmpty($project))
-                    {
-                        $completed=$project['completed'];
-                        if($completed!='Si')
-                        {
-                            $invoicestatus='To Invoice when Project completed';
-                        }
-                    }
                 }
                 else
                 {
-                    $invoicestatus='To Check';
+                    $fields['validated']='';
                 }
-            }
 
-            $fields['invoicestatus']=$invoicestatus;
-            $fields['worktime_decimal']=$worktimedecimal;
-            $fields['workprice']=$workprice;
-            $fields['traveltime_decimal']=$traveltimedecimal;
-            $fields['travelprice']=$travelprice;
-            $fields['totaltime_decimal']=$totaltimedecimal;
-            $fields['totalprice']=$totalprice;
-            
-            if(($service=='Assistenza IT')||($service=='Assistenza PBX')||($service=='Assistenza SW')||($service=='Assistenza Web Hosting')||($service=='Printing'))
-            {
-                if($row['validated']!='Si')
+                if(isnotempty($recordid_project))
                 {
-                    $fields['validated']='No';
+                    $this->custom_update('project', $recordid_project);
                 }
-                
-            }
-            else
-            {
-                $fields['validated']='';
-            }
-            
-            if(isnotempty($recordid_project))
-            {
-                $this->custom_update('project', $recordid_project);
             }
             
             
