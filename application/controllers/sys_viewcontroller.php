@@ -14188,7 +14188,7 @@ GROUP BY user_contratti.recordid_
         foreach ($accounts as $key => $account) {
             $accountid=$account['id'];
             $account['account_id']=$accountid;
-            $jdoc_row= $this->Sys_model->db_get_row('user_bexio_account','*',"id='$accountid'");
+            $jdoc_row= $this->Sys_model->db_get_row('user_bexio_account','*',"account_id='$accountid'");
             if($jdoc_row!=null)
             {
                 $recordid=$jdoc_row['recordid_'];
