@@ -14182,8 +14182,6 @@ GROUP BY user_contratti.recordid_
     
     public function api_bexio_set_account()
     {
-        $sql="UPDATE user_bexio_account SET status='Deleted'";
-        $this->Sys_model->execute_query($sql);
         $accounts=$this->api_bexio_get_default('accounts','bexio_account');
         foreach ($accounts as $key => $account) {
             $accountid=$account['id'];
